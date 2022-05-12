@@ -1,0 +1,744 @@
+diff --git a/00.ipynb b/00.ipynb
+index 84c9952..0992c67 100644
+--- a/00.ipynb
++++ b/00.ipynb
+@@ -91,7 +91,7 @@
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 30,
++   "execution_count": 6,
+    "id": "d58cd13d-c231-40ed-bae5-7c5a52650549",
+    "metadata": {},
+    "outputs": [],
+@@ -109,7 +109,7 @@
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 31,
++   "execution_count": 7,
+    "id": "941e1276-88de-4cbb-84ce-05bdf871ff6d",
+    "metadata": {},
+    "outputs": [
+@@ -119,13 +119,23 @@
+        "array([0., 0., 1., 0.])"
+       ]
+      },
+-     "execution_count": 31,
++     "execution_count": 7,
+      "metadata": {},
+      "output_type": "execute_result"
+     }
+    ],
+    "source": [
+-    "words_to_int(\"I am testing this\",[\"testing\",\"I\",\"test\",\"grswgre\"])"
++    "words_to_int([\"test\"],[\"testing\",\"I\",\"test\",\"grswgre\"])"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": 8,
++   "id": "05d8574e-3f47-4932-9306-03d74e0b2423",
++   "metadata": {},
++   "outputs": [],
++   "source": [
++    "test = pd.read_csv('./data/test.csv')"
+    ]
+   },
+   {
+@@ -135,12 +145,192 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "data = pd.read_csv('./data/train.csv')"
++    "data = pd.read_csv('./data/train.csv')\n",
++    "data = data.sample(frac=1)\n",
++    "data = data.sample(frac=1)\n",
++    "data = data.sample(frac=1)"
+    ]
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 34,
++   "execution_count": 33,
++   "id": "7d8ff2c0-dfe4-43ba-8f81-ad55fe3979ad",
++   "metadata": {},
++   "outputs": [
++    {
++     "data": {
++      "text/html": [
++       "<div>\n",
++       "<style scoped>\n",
++       "    .dataframe tbody tr th:only-of-type {\n",
++       "        vertical-align: middle;\n",
++       "    }\n",
++       "\n",
++       "    .dataframe tbody tr th {\n",
++       "        vertical-align: top;\n",
++       "    }\n",
++       "\n",
++       "    .dataframe thead th {\n",
++       "        text-align: right;\n",
++       "    }\n",
++       "</style>\n",
++       "<table border=\"1\" class=\"dataframe\">\n",
++       "  <thead>\n",
++       "    <tr style=\"text-align: right;\">\n",
++       "      <th></th>\n",
++       "      <th>id</th>\n",
++       "      <th>keyword</th>\n",
++       "      <th>location</th>\n",
++       "      <th>text</th>\n",
++       "      <th>target</th>\n",
++       "    </tr>\n",
++       "  </thead>\n",
++       "  <tbody>\n",
++       "    <tr>\n",
++       "      <th>7071</th>\n",
++       "      <td>10127</td>\n",
++       "      <td>upheaval</td>\n",
++       "      <td>NaN</td>\n",
++       "      <td>How long O Lord (Study 3)\\n The sixth seal ope...</td>\n",
++       "      <td>1</td>\n",
++       "    </tr>\n",
++       "    <tr>\n",
++       "      <th>2695</th>\n",
++       "      <td>3866</td>\n",
++       "      <td>detonation</td>\n",
++       "      <td>NaN</td>\n",
++       "      <td>Ignition Knock (Detonation) Sensor-Senso BECK/...</td>\n",
++       "      <td>1</td>\n",
++       "    </tr>\n",
++       "    <tr>\n",
++       "      <th>2881</th>\n",
++       "      <td>4141</td>\n",
++       "      <td>drought</td>\n",
++       "      <td>miami</td>\n",
++       "      <td>@_gaabyx we got purple activist I thought it w...</td>\n",
++       "      <td>1</td>\n",
++       "    </tr>\n",
++       "    <tr>\n",
++       "      <th>5438</th>\n",
++       "      <td>7758</td>\n",
++       "      <td>police</td>\n",
++       "      <td>NaN</td>\n",
++       "      <td>Vinnie Jones goes on the beat with Northumbria...</td>\n",
++       "      <td>0</td>\n",
++       "    </tr>\n",
++       "    <tr>\n",
++       "      <th>5951</th>\n",
++       "      <td>8502</td>\n",
++       "      <td>screaming</td>\n",
++       "      <td>NaN</td>\n",
++       "      <td>*CUE THE JARIANA STANS SCREAMING</td>\n",
++       "      <td>0</td>\n",
++       "    </tr>\n",
++       "    <tr>\n",
++       "      <th>...</th>\n",
++       "      <td>...</td>\n",
++       "      <td>...</td>\n",
++       "      <td>...</td>\n",
++       "      <td>...</td>\n",
++       "      <td>...</td>\n",
++       "    </tr>\n",
++       "    <tr>\n",
++       "      <th>5463</th>\n",
++       "      <td>7793</td>\n",
++       "      <td>police</td>\n",
++       "      <td>Los Angeles</td>\n",
++       "      <td>.@slosheriff: 2 South Gate police officers and...</td>\n",
++       "      <td>0</td>\n",
++       "    </tr>\n",
++       "    <tr>\n",
++       "      <th>673</th>\n",
++       "      <td>972</td>\n",
++       "      <td>blaze</td>\n",
++       "      <td>NaN</td>\n",
++       "      <td>@_itzSteven @xdojjjj @whopper_jr_760 huh?? me ...</td>\n",
++       "      <td>0</td>\n",
++       "    </tr>\n",
++       "    <tr>\n",
++       "      <th>757</th>\n",
++       "      <td>1093</td>\n",
++       "      <td>blew%20up</td>\n",
++       "      <td>#SOUTHAMPTON ENGLAND</td>\n",
++       "      <td>The universe might not actually exist scientis...</td>\n",
++       "      <td>0</td>\n",
++       "    </tr>\n",
++       "    <tr>\n",
++       "      <th>4001</th>\n",
++       "      <td>5684</td>\n",
++       "      <td>floods</td>\n",
++       "      <td>New York, NY</td>\n",
++       "      <td>Download @ iTunes http://t.co/ocojPPnRh1 'Floo...</td>\n",
++       "      <td>0</td>\n",
++       "    </tr>\n",
++       "    <tr>\n",
++       "      <th>2912</th>\n",
++       "      <td>4181</td>\n",
++       "      <td>drown</td>\n",
++       "      <td>NaN</td>\n",
++       "      <td>I am that girl on tv that sadly turns her musi...</td>\n",
++       "      <td>0</td>\n",
++       "    </tr>\n",
++       "  </tbody>\n",
++       "</table>\n",
++       "<p>7613 rows × 5 columns</p>\n",
++       "</div>"
++      ],
++      "text/plain": [
++       "         id     keyword              location  \\\n",
++       "7071  10127    upheaval                   NaN   \n",
++       "2695   3866  detonation                   NaN   \n",
++       "2881   4141     drought                 miami   \n",
++       "5438   7758      police                   NaN   \n",
++       "5951   8502   screaming                   NaN   \n",
++       "...     ...         ...                   ...   \n",
++       "5463   7793      police          Los Angeles    \n",
++       "673     972       blaze                   NaN   \n",
++       "757    1093   blew%20up  #SOUTHAMPTON ENGLAND   \n",
++       "4001   5684      floods          New York, NY   \n",
++       "2912   4181       drown                   NaN   \n",
++       "\n",
++       "                                                   text  target  \n",
++       "7071  How long O Lord (Study 3)\\n The sixth seal ope...       1  \n",
++       "2695  Ignition Knock (Detonation) Sensor-Senso BECK/...       1  \n",
++       "2881  @_gaabyx we got purple activist I thought it w...       1  \n",
++       "5438  Vinnie Jones goes on the beat with Northumbria...       0  \n",
++       "5951                   *CUE THE JARIANA STANS SCREAMING       0  \n",
++       "...                                                 ...     ...  \n",
++       "5463  .@slosheriff: 2 South Gate police officers and...       0  \n",
++       "673   @_itzSteven @xdojjjj @whopper_jr_760 huh?? me ...       0  \n",
++       "757   The universe might not actually exist scientis...       0  \n",
++       "4001  Download @ iTunes http://t.co/ocojPPnRh1 'Floo...       0  \n",
++       "2912  I am that girl on tv that sadly turns her musi...       0  \n",
++       "\n",
++       "[7613 rows x 5 columns]"
++      ]
++     },
++     "execution_count": 33,
++     "metadata": {},
++     "output_type": "execute_result"
++    }
++   ],
++   "source": [
++    "data"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": 10,
++   "id": "89372f43-7198-4611-8b05-c654903fa6e2",
++   "metadata": {},
++   "outputs": [],
++   "source": [
++    "# TODO Use Keyboard / Location in X"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": 11,
+    "id": "ca5fb6d1-1491-4289-9c83-52f122be8da1",
+    "metadata": {},
+    "outputs": [],
+@@ -151,7 +341,7 @@
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 36,
++   "execution_count": 12,
+    "id": "4ac62989-7205-4bf7-8701-ead190a7fc8a",
+    "metadata": {},
+    "outputs": [],
+@@ -162,7 +352,7 @@
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 38,
++   "execution_count": 13,
+    "id": "b5cb5fd5-de93-4848-82d3-67057b5b57bd",
+    "metadata": {},
+    "outputs": [],
+@@ -172,7 +362,7 @@
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 41,
++   "execution_count": 14,
+    "id": "73b18711-9193-417a-af39-c699a6070e58",
+    "metadata": {},
+    "outputs": [
+@@ -180,7 +370,7 @@
+      "name": "stderr",
+      "output_type": "stream",
+      "text": [
+-      "7613it [00:02, 3537.61it/s]\n"
++      "7613it [00:02, 3516.19it/s]\n"
+      ]
+     }
+    ],
+@@ -196,17 +386,18 @@
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 44,
++   "execution_count": 15,
+    "id": "4247d283-edb5-47eb-921a-85ef7c77dd4c",
+    "metadata": {},
+    "outputs": [],
+    "source": [
++    "np.random.shuffle(all_words)\n",
+     "np.random.shuffle(all_words)"
+    ]
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 45,
++   "execution_count": 16,
+    "id": "265074bf-8474-4e4a-9732-2cf7128e2c77",
+    "metadata": {},
+    "outputs": [],
+@@ -216,7 +407,7 @@
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 48,
++   "execution_count": 17,
+    "id": "3e586466-ea23-40b8-b577-8113e328bae9",
+    "metadata": {},
+    "outputs": [],
+@@ -226,7 +417,7 @@
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 49,
++   "execution_count": 18,
+    "id": "8754c28e-1b33-46f7-9479-71a5f9b37aff",
+    "metadata": {},
+    "outputs": [],
+@@ -237,7 +428,7 @@
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 50,
++   "execution_count": 19,
+    "id": "55adc44f-445f-4089-82cd-f3a61c24f9b6",
+    "metadata": {},
+    "outputs": [
+@@ -245,19 +436,19 @@
+      "name": "stderr",
+      "output_type": "stream",
+      "text": [
+-      "7613it [00:28, 268.74it/s]\n"
++      "7613it [01:28, 85.77it/s] \n"
+      ]
+     }
+    ],
+    "source": [
+     "for X_iter,y_iter in tqdm(zip(X,y)):\n",
+     "    new_X.append(words_to_int(X_iter,all_words))\n",
+-    "    new_y.append(np.eye(tags.index(y_iter),len(tags)))"
++    "    new_y.append(tags.index(y_iter))"
+    ]
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 51,
++   "execution_count": 20,
+    "id": "d8c1a28f-97a1-4e8e-8df0-64d9f4fddb9e",
+    "metadata": {},
+    "outputs": [
+@@ -267,7 +458,7 @@
+        "array([0., 1., 0., ..., 0., 0., 0.])"
+       ]
+      },
+-     "execution_count": 51,
++     "execution_count": 20,
+      "metadata": {},
+      "output_type": "execute_result"
+     }
+@@ -278,29 +469,379 @@
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 52,
++   "execution_count": 21,
+    "id": "db79aa14-41de-4bd3-9d4a-d5ad1ee0764b",
+    "metadata": {},
+    "outputs": [
+     {
+      "data": {
+       "text/plain": [
+-       "array([[1., 0.]])"
++       "1"
+       ]
+      },
+-     "execution_count": 52,
++     "execution_count": 21,
+      "metadata": {},
+      "output_type": "execute_result"
+     }
+    ],
+    "source": [
+-    "new_y[0]"
++    "new_y[85]"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": 22,
++   "id": "9f5c5d9b-d7dd-4241-8b84-e5858586df2c",
++   "metadata": {},
++   "outputs": [],
++   "source": [
++    "X = np.array(new_X)\n",
++    "y = np.array(new_y)"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": 23,
++   "id": "990ccec5-50f3-47c3-a6af-48817fe04983",
++   "metadata": {},
++   "outputs": [],
++   "source": [
++    "X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.0625,shuffle=True)"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": 24,
++   "id": "4727ec24-5095-481d-9189-34a2fc9d7fc2",
++   "metadata": {},
++   "outputs": [],
++   "source": [
++    "device = 'cuda'"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": 25,
++   "id": "99a7b37d-aa29-4c2e-9a1c-344d6ea2ec5f",
++   "metadata": {},
++   "outputs": [],
++   "source": [
++    "X_train = torch.from_numpy(X_train).to(device)\n",
++    "y_train = torch.from_numpy(y_train).to(device)\n",
++    "X_test = torch.from_numpy(X_test).to(device)\n",
++    "y_test = torch.from_numpy(y_test).to(device)"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": 31,
++   "id": "4dc47dea-805a-4466-bb77-316f0aa9f2ab",
++   "metadata": {},
++   "outputs": [],
++   "source": [
++    "class Model(Module):\n",
++    "    def __init__(self):\n",
++    "        super().__init__()\n",
++    "        self.activation = ReLU()\n",
++    "        self.output_activation = Sigmoid()\n",
++    "        self.linear1 = Linear(len(all_words),512)\n",
++    "        self.linear2 = Linear(512,1024)\n",
++    "        self.linear3bn = BatchNorm1d(1024)\n",
++    "        self.linear4 = Linear(1024,2048)\n",
++    "        self.linear5 = Linear(2048,1024)\n",
++    "        self.output = Linear(1024,1)\n",
++    "    \n",
++    "    def forward(self,X):\n",
++    "        preds = self.activation(self.linear1(X))\n",
++    "        preds = self.activation(self.linear2(preds))\n",
++    "        preds = self.activation(self.linear3bn(preds))\n",
++    "        preds = self.activation(self.linear4(preds))\n",
++    "        preds = self.activation(self.linear5(preds))\n",
++    "        preds = self.output_activation(self.output(preds))\n",
++    "        return preds"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": 27,
++   "id": "6392efa0-2e18-4420-883d-d6ef9c175a4f",
++   "metadata": {},
++   "outputs": [],
++   "source": [
++    "model = Model().to(device)\n",
++    "criterion = MSELoss()\n",
++    "optimizer = Adam(model.parameters(),lr=0.001)\n",
++    "epochs = 1000\n",
++    "batch_size = 32"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": 28,
++   "id": "6c71fcb3-47fb-4195-919f-9c30e5509c4f",
++   "metadata": {},
++   "outputs": [],
++   "source": [
++    "def accuracy(model,X,y):\n",
++    "    preds = model(X.float())\n",
++    "    correct = 0\n",
++    "    total = 0\n",
++    "    for pred,y_iter in zip(preds.view(-1),y.view(-1)):\n",
++    "        pred = torch.argmax(pred)\n",
++    "        y_iter = torch.argmax(y_iter)\n",
++    "        if pred == y_iter:\n",
++    "            correct += 1\n",
++    "        total += 1\n",
++    "    return round(correct/total,3)"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": 29,
++   "id": "148373e2-f8c7-4957-81e7-fd0a9d32d190",
++   "metadata": {},
++   "outputs": [],
++   "source": [
++    "def g_loss(model,X,y):\n",
++    "    preds = model(X.float())\n",
++    "    loss = criterion(preds.view(-1),y.float().view(-1))\n",
++    "    return loss.item()"
+    ]
+   },
++  {
++   "cell_type": "code",
++   "execution_count": 30,
++   "id": "8e465964-a28c-4c09-beb2-f0b3911d7ef2",
++   "metadata": {},
++   "outputs": [
++    {
++     "name": "stderr",
++     "output_type": "stream",
++     "text": [
++      "\u001b[34m\u001b[1mwandb\u001b[0m: Currently logged in as: \u001b[33mranuga-d\u001b[0m (use `wandb login --relogin` to force relogin)\n",
++      "RuntimeError: module compiled against API version 0xe but this version of numpy is 0xd\n"
++     ]
++    },
++    {
++     "data": {
++      "text/html": [
++       "wandb version 0.12.16 is available!  To upgrade, please run:\n",
++       " $ pip install wandb --upgrade"
++      ],
++      "text/plain": [
++       "<IPython.core.display.HTML object>"
++      ]
++     },
++     "metadata": {},
++     "output_type": "display_data"
++    },
++    {
++     "data": {
++      "text/html": [
++       "Tracking run with wandb version 0.12.15"
++      ],
++      "text/plain": [
++       "<IPython.core.display.HTML object>"
++      ]
++     },
++     "metadata": {},
++     "output_type": "display_data"
++    },
++    {
++     "data": {
++      "text/html": [
++       "Run data is saved locally in <code>/media/indika/Sync/Programmer-RD-AI/Programming/Projects/Python/Artifical-Intelligence/PyTorch/NLP/Natural-Language-Processing-with-Disaster-Tweets/wandb/run-20220512_222110-3sjphvjy</code>"
++      ],
++      "text/plain": [
++       "<IPython.core.display.HTML object>"
++      ]
++     },
++     "metadata": {},
++     "output_type": "display_data"
++    },
++    {
++     "data": {
++      "text/html": [
++       "Syncing run <strong><a href=\"https://wandb.ai/ranuga-d/Natural-Language-Processing-with-Disaster-Tweets/runs/3sjphvjy\" target=\"_blank\">BaseLine</a></strong> to <a href=\"https://wandb.ai/ranuga-d/Natural-Language-Processing-with-Disaster-Tweets\" target=\"_blank\">Weights & Biases</a> (<a href=\"https://wandb.me/run\" target=\"_blank\">docs</a>)<br/>"
++      ],
++      "text/plain": [
++       "<IPython.core.display.HTML object>"
++      ]
++     },
++     "metadata": {},
++     "output_type": "display_data"
++    },
++    {
++     "name": "stderr",
++     "output_type": "stream",
++     "text": [
++      "  0%|                                           | 0/100 [00:00<?, ?it/s]Exception in thread Thread-11:\n",
++      "Traceback (most recent call last):\n",
++      "  File \"/usr/local/lib/python3.8/dist-packages/wandb/apis/normalize.py\", line 22, in wrapper\n",
++      "    return func(*args, **kwargs)\n",
++      "  File \"/usr/local/lib/python3.8/dist-packages/wandb/sdk/internal/internal_api.py\", line 1433, in upload_urls\n",
++      "    raise CommError(f\"Run does not exist {entity}/{project}/{run_id}.\")\n",
++      "wandb.errors.CommError: Run does not exist ranuga-d/Natural-Language-Processing-with-Disaster-Tweets/3sjphvjy.\n",
++      "\n",
++      "During handling of the above exception, another exception occurred:\n",
++      "\n",
++      "Traceback (most recent call last):\n",
++      "  File \"/usr/lib/python3.8/threading.py\", line 932, in _bootstrap_inner\n",
++      "    self.run()\n",
++      "  File \"/usr/local/lib/python3.8/dist-packages/wandb/filesync/upload_job.py\", line 56, in run\n",
++      "    success = self.push()\n",
++      "  File \"/usr/local/lib/python3.8/dist-packages/wandb/filesync/upload_job.py\", line 112, in push\n",
++      "    _, upload_headers, result = self._api.upload_urls(project, [self.save_name])\n",
++      "  File \"/usr/local/lib/python3.8/dist-packages/wandb/apis/normalize.py\", line 58, in wrapper\n",
++      "    raise CommError(message, err).with_traceback(sys.exc_info()[2])\n",
++      "  File \"/usr/local/lib/python3.8/dist-packages/wandb/apis/normalize.py\", line 22, in wrapper\n",
++      "    return func(*args, **kwargs)\n",
++      "  File \"/usr/local/lib/python3.8/dist-packages/wandb/sdk/internal/internal_api.py\", line 1433, in upload_urls\n",
++      "    raise CommError(f\"Run does not exist {entity}/{project}/{run_id}.\")\n",
++      "wandb.errors.CommError: Run does not exist ranuga-d/Natural-Language-Processing-with-Disaster-Tweets/3sjphvjy.\n",
++      "Exception in thread Thread-12:\n",
++      "Traceback (most recent call last):\n",
++      "  File \"/usr/local/lib/python3.8/dist-packages/wandb/apis/normalize.py\", line 22, in wrapper\n",
++      "    return func(*args, **kwargs)\n",
++      "  File \"/usr/local/lib/python3.8/dist-packages/wandb/sdk/internal/internal_api.py\", line 1433, in upload_urls\n",
++      "    raise CommError(f\"Run does not exist {entity}/{project}/{run_id}.\")\n",
++      "wandb.errors.CommError: Run does not exist ranuga-d/Natural-Language-Processing-with-Disaster-Tweets/3sjphvjy.\n",
++      "\n",
++      "During handling of the above exception, another exception occurred:\n",
++      "\n",
++      "Traceback (most recent call last):\n",
++      "  File \"/usr/lib/python3.8/threading.py\", line 932, in _bootstrap_inner\n",
++      "    self.run()\n",
++      "  File \"/usr/local/lib/python3.8/dist-packages/wandb/filesync/upload_job.py\", line 56, in run\n",
++      "    success = self.push()\n",
++      "  File \"/usr/local/lib/python3.8/dist-packages/wandb/filesync/upload_job.py\", line 112, in push\n",
++      "    _, upload_headers, result = self._api.upload_urls(project, [self.save_name])\n",
++      "  File \"/usr/local/lib/python3.8/dist-packages/wandb/apis/normalize.py\", line 58, in wrapper\n",
++      "    raise CommError(message, err).with_traceback(sys.exc_info()[2])\n",
++      "  File \"/usr/local/lib/python3.8/dist-packages/wandb/apis/normalize.py\", line 22, in wrapper\n",
++      "    return func(*args, **kwargs)\n",
++      "  File \"/usr/local/lib/python3.8/dist-packages/wandb/sdk/internal/internal_api.py\", line 1433, in upload_urls\n",
++      "    raise CommError(f\"Run does not exist {entity}/{project}/{run_id}.\")\n",
++      "wandb.errors.CommError: Run does not exist ranuga-d/Natural-Language-Processing-with-Disaster-Tweets/3sjphvjy.\n",
++      "100%|█████████████████████████████████| 100/100 [02:57<00:00,  1.78s/it]\n"
++     ]
++    },
++    {
++     "data": {
++      "text/html": [
++       "Waiting for W&B process to finish... <strong style=\"color:green\">(success).</strong>"
++      ],
++      "text/plain": [
++       "<IPython.core.display.HTML object>"
++      ]
++     },
++     "metadata": {},
++     "output_type": "display_data"
++    },
++    {
++     "data": {
++      "application/vnd.jupyter.widget-view+json": {
++       "model_id": "",
++       "version_major": 2,
++       "version_minor": 0
++      },
++      "text/plain": [
++       "VBox(children=(Label(value='0.036 MB of 0.053 MB uploaded (0.000 MB deduped)\\r'), FloatProgress(value=0.683259…"
++      ]
++     },
++     "metadata": {},
++     "output_type": "display_data"
++    },
++    {
++     "data": {
++      "text/html": [
++       "<style>\n",
++       "    table.wandb td:nth-child(1) { padding: 0 10px; text-align: right }\n",
++       "    .wandb-row { display: flex; flex-direction: row; flex-wrap: wrap; width: 100% }\n",
++       "    .wandb-col { display: flex; flex-direction: column; flex-basis: 100%; flex: 1; padding: 10px; }\n",
++       "    </style>\n",
++       "<div class=\"wandb-row\"><div class=\"wandb-col\"><h3>Run history:</h3><br/><table class=\"wandb\"><tr><td>Accuracy</td><td>▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁</td></tr><tr><td>Loss</td><td>█████████▇▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▄▄▄▃▃▃▂▂▂▂▂▁▁▂▁</td></tr><tr><td>Val Accuracy</td><td>▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁</td></tr><tr><td>Val Loss</td><td>▁▁▁▁▁▁▁▁▁▁▁▁▂▁▂▂▂▂▂▂▃▃▃▄▄▅▅▅▆▅▆▇▇▇▇▇██▇▇</td></tr></table><br/></div><div class=\"wandb-col\"><h3>Run summary:</h3><br/><table class=\"wandb\"><tr><td>Accuracy</td><td>1.0</td></tr><tr><td>Loss</td><td>0.09616</td></tr><tr><td>Val Accuracy</td><td>1.0</td></tr><tr><td>Val Loss</td><td>0.33221</td></tr></table><br/></div></div>"
++      ],
++      "text/plain": [
++       "<IPython.core.display.HTML object>"
++      ]
++     },
++     "metadata": {},
++     "output_type": "display_data"
++    },
++    {
++     "data": {
++      "text/html": [
++       "Synced <strong style=\"color:#cdcd00\">BaseLine</strong>: <a href=\"https://wandb.ai/ranuga-d/Natural-Language-Processing-with-Disaster-Tweets/runs/3sjphvjy\" target=\"_blank\">https://wandb.ai/ranuga-d/Natural-Language-Processing-with-Disaster-Tweets/runs/3sjphvjy</a><br/>Synced 6 W&B file(s), 0 media file(s), 2 artifact file(s) and 1 other file(s)"
++      ],
++      "text/plain": [
++       "<IPython.core.display.HTML object>"
++      ]
++     },
++     "metadata": {},
++     "output_type": "display_data"
++    },
++    {
++     "data": {
++      "text/html": [
++       "Find logs at: <code>./wandb/run-20220512_222110-3sjphvjy/logs</code>"
++      ],
++      "text/plain": [
++       "<IPython.core.display.HTML object>"
++      ]
++     },
++     "metadata": {},
++     "output_type": "display_data"
++    }
++   ],
++   "source": [
++    "wandb.init(project=PROJECT_NAME,name='BaseLine')\n",
++    "wandb.watch(model)\n",
++    "for _ in tqdm(range(epochs)):\n",
++    "    for i in range(0,len(X_train),batch_size):\n",
++    "        try:\n",
++    "            X_batch = X_train[i:i+batch_size]\n",
++    "            y_batch = y_train[i:i+batch_size]\n",
++    "            preds = model(X_batch.float())\n",
++    "            loss = criterion(preds.float().view(-1),y_batch.float().view(-1))\n",
++    "            optimizer.zero_grad()\n",
++    "            loss.backward()\n",
++    "            optimizer.step()\n",
++    "        except:\n",
++    "            pass\n",
++    "    wandb.log(\n",
++    "        {\n",
++    "            \"Val Accuracy\":accuracy(model,X_test,y_test),\n",
++    "            \"Val Loss\":g_loss(model,X_test,y_test),\n",
++    "            \"Accuracy\":accuracy(model,X_train,y_train),\n",
++    "            \"Loss\":g_loss(model,X_train,y_train)\n",
++    "        }\n",
++    "    )\n",
++    "    wandb.watch(model)\n",
++    "wandb.watch(model)\n",
++    "wandb.finish()"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "ee8ae269-4dcf-4f9b-9475-106a7fc45f92",
++   "metadata": {},
++   "outputs": [],
++   "source": []
++  },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "06fe3d37-4338-4e37-bc8b-fb8ce799aed2",
++   "metadata": {},
++   "outputs": [],
++   "source": []
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "id": "93f75441-360e-4e7b-b641-438dcafe0072",
++   "id": "fbc9eff3-0e4c-4afb-a9fa-a1602f80bb92",
+    "metadata": {},
+    "outputs": [],
+    "source": []
