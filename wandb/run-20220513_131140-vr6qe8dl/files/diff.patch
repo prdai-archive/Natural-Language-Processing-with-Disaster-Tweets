@@ -1,0 +1,533 @@
+diff --git a/00.ipynb b/00.ipynb
+index 4a84f84..8356892 100644
+--- a/00.ipynb
++++ b/00.ipynb
+@@ -370,7 +370,7 @@
+      "name": "stderr",
+      "output_type": "stream",
+      "text": [
+-      "7613it [00:02, 3523.53it/s]\n"
++      "7613it [00:02, 3560.06it/s]\n"
+      ]
+     }
+    ],
+@@ -428,7 +428,7 @@
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 20,
++   "execution_count": null,
+    "id": "55adc44f-445f-4089-82cd-f3a61c24f9b6",
+    "metadata": {},
+    "outputs": [
+@@ -436,7 +436,7 @@
+      "name": "stderr",
+      "output_type": "stream",
+      "text": [
+-      "7613it [01:36, 79.05it/s]\n"
++      "3092it [00:37, 81.76it/s]"
+      ]
+     }
+    ],
+@@ -448,49 +448,27 @@
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 21,
++   "execution_count": null,
+    "id": "d8c1a28f-97a1-4e8e-8df0-64d9f4fddb9e",
+    "metadata": {},
+-   "outputs": [
+-    {
+-     "data": {
+-      "text/plain": [
+-       "array([0., 0., 0., ..., 0., 0., 0.])"
+-      ]
+-     },
+-     "execution_count": 21,
+-     "metadata": {},
+-     "output_type": "execute_result"
+-    }
+-   ],
++   "outputs": [],
+    "source": [
+     "new_X[0]"
+    ]
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 22,
++   "execution_count": null,
+    "id": "db79aa14-41de-4bd3-9d4a-d5ad1ee0764b",
+    "metadata": {},
+-   "outputs": [
+-    {
+-     "data": {
+-      "text/plain": [
+-       "1"
+-      ]
+-     },
+-     "execution_count": 22,
+-     "metadata": {},
+-     "output_type": "execute_result"
+-    }
+-   ],
++   "outputs": [],
+    "source": [
+     "new_y[85]"
+    ]
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 23,
++   "execution_count": null,
+    "id": "9f5c5d9b-d7dd-4241-8b84-e5858586df2c",
+    "metadata": {},
+    "outputs": [],
+@@ -501,17 +479,17 @@
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 24,
++   "execution_count": null,
+    "id": "990ccec5-50f3-47c3-a6af-48817fe04983",
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.0625,shuffle=True)"
++    "X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.125,shuffle=True)"
+    ]
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 25,
++   "execution_count": null,
+    "id": "4727ec24-5095-481d-9189-34a2fc9d7fc2",
+    "metadata": {},
+    "outputs": [],
+@@ -521,7 +499,7 @@
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 26,
++   "execution_count": null,
+    "id": "99a7b37d-aa29-4c2e-9a1c-344d6ea2ec5f",
+    "metadata": {},
+    "outputs": [],
+@@ -534,7 +512,7 @@
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 27,
++   "execution_count": null,
+    "id": "4dc47dea-805a-4466-bb77-316f0aa9f2ab",
+    "metadata": {},
+    "outputs": [],
+@@ -544,17 +522,20 @@
+     "        super().__init__()\n",
+     "        self.activation = ReLU()\n",
+     "        self.output_activation = Sigmoid()\n",
+-    "        self.linear1 = Linear(len(all_words),512)\n",
+-    "        self.linear2 = Linear(512,1024)\n",
+-    "        self.linear3bn = BatchNorm1d(1024)\n",
+-    "        self.linear4 = Linear(1024,2048)\n",
+-    "        self.linear5 = Linear(2048,1024)\n",
+-    "        self.output = Linear(1024,1)\n",
++    "        self.linear1 = Linear(len(all_words),1024)\n",
++    "        self.linear2 = Linear(1024,2048)\n",
++    "        self.linearbn = BatchNorm1d(2048)\n",
++    "        self.linear3 = Linear(2048,2048)\n",
++    "        self.linear4 = Linear(2048,4096)\n",
++    "        self.linear5 = Linear(4096,2048)\n",
++    "        self.output = Linear(2048,1)\n",
+     "    \n",
+     "    def forward(self,X):\n",
+     "        preds = self.activation(self.linear1(X))\n",
+     "        preds = self.activation(self.linear2(preds))\n",
+-    "        preds = self.activation(self.linear3bn(preds))\n",
++    "        preds = self.activation(self.linear3(preds))\n",
++    "        preds = self.activation(self.linearbn(preds))\n",
++    "        preds = self.activation(self.linear3(preds))\n",
+     "        preds = self.activation(self.linear4(preds))\n",
+     "        preds = self.activation(self.linear5(preds))\n",
+     "        preds = self.output_activation(self.output(preds))\n",
+@@ -563,7 +544,7 @@
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 28,
++   "execution_count": null,
+    "id": "6392efa0-2e18-4420-883d-d6ef9c175a4f",
+    "metadata": {},
+    "outputs": [],
+@@ -577,7 +558,7 @@
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 29,
++   "execution_count": null,
+    "id": "6c71fcb3-47fb-4195-919f-9c30e5509c4f",
+    "metadata": {},
+    "outputs": [],
+@@ -587,8 +568,8 @@
+     "    total = 0\n",
+     "    preds = model(X.float())\n",
+     "    for pred,y_batch in zip(preds,y):\n",
+-    "        pred = int(torch.argmax(pred))\n",
+-    "        y_batch = int(torch.argmax(y_batch))\n",
++    "        pred = int(torch.round(pred))\n",
++    "        y_batch = int(y_batch)\n",
+     "        if pred == y_batch:\n",
+     "            correct += 1\n",
+     "        total += 1\n",
+@@ -598,7 +579,7 @@
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 30,
++   "execution_count": null,
+    "id": "148373e2-f8c7-4957-81e7-fd0a9d32d190",
+    "metadata": {},
+    "outputs": [],
+@@ -611,129 +592,10 @@
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 31,
++   "execution_count": null,
+    "id": "8e465964-a28c-4c09-beb2-f0b3911d7ef2",
+    "metadata": {},
+-   "outputs": [
+-    {
+-     "name": "stderr",
+-     "output_type": "stream",
+-     "text": [
+-      "\u001b[34m\u001b[1mwandb\u001b[0m: W&B API key is configured (use `wandb login --relogin` to force relogin)\n",
+-      "RuntimeError: module compiled against API version 0xe but this version of numpy is 0xd\n"
+-     ]
+-    },
+-    {
+-     "data": {
+-      "text/html": [
+-       "Tracking run with wandb version 0.12.15"
+-      ],
+-      "text/plain": [
+-       "<IPython.core.display.HTML object>"
+-      ]
+-     },
+-     "metadata": {},
+-     "output_type": "display_data"
+-    },
+-    {
+-     "data": {
+-      "text/html": [
+-       "Run data is saved locally in <code>/media/indika/Sync/Programmer-RD-AI/Programming/Projects/Python/Artifical-Intelligence/PyTorch/NLP/Natural-Language-Processing-with-Disaster-Tweets/wandb/run-20220513_074930-2zmnvue5</code>"
+-      ],
+-      "text/plain": [
+-       "<IPython.core.display.HTML object>"
+-      ]
+-     },
+-     "metadata": {},
+-     "output_type": "display_data"
+-    },
+-    {
+-     "data": {
+-      "text/html": [
+-       "Syncing run <strong><a href=\"https://wandb.ai/ranuga-d/Natural-Language-Processing-with-Disaster-Tweets/runs/2zmnvue5\" target=\"_blank\">BaseLine</a></strong> to <a href=\"https://wandb.ai/ranuga-d/Natural-Language-Processing-with-Disaster-Tweets\" target=\"_blank\">Weights & Biases</a> (<a href=\"https://wandb.me/run\" target=\"_blank\">docs</a>)<br/>"
+-      ],
+-      "text/plain": [
+-       "<IPython.core.display.HTML object>"
+-      ]
+-     },
+-     "metadata": {},
+-     "output_type": "display_data"
+-    },
+-    {
+-     "name": "stderr",
+-     "output_type": "stream",
+-     "text": [
+-      "100%|█████████████████████████████████| 100/100 [03:11<00:00,  1.91s/it]\n"
+-     ]
+-    },
+-    {
+-     "data": {
+-      "text/html": [
+-       "Waiting for W&B process to finish... <strong style=\"color:green\">(success).</strong>"
+-      ],
+-      "text/plain": [
+-       "<IPython.core.display.HTML object>"
+-      ]
+-     },
+-     "metadata": {},
+-     "output_type": "display_data"
+-    },
+-    {
+-     "data": {
+-      "application/vnd.jupyter.widget-view+json": {
+-       "model_id": "",
+-       "version_major": 2,
+-       "version_minor": 0
+-      },
+-      "text/plain": [
+-       "VBox(children=(Label(value='0.001 MB of 0.001 MB uploaded (0.000 MB deduped)\\r'), FloatProgress(value=1.0, max…"
+-      ]
+-     },
+-     "metadata": {},
+-     "output_type": "display_data"
+-    },
+-    {
+-     "data": {
+-      "text/html": [
+-       "<style>\n",
+-       "    table.wandb td:nth-child(1) { padding: 0 10px; text-align: right }\n",
+-       "    .wandb-row { display: flex; flex-direction: row; flex-wrap: wrap; width: 100% }\n",
+-       "    .wandb-col { display: flex; flex-direction: column; flex-basis: 100%; flex: 1; padding: 10px; }\n",
+-       "    </style>\n",
+-       "<div class=\"wandb-row\"><div class=\"wandb-col\"><h3>Run history:</h3><br/><table class=\"wandb\"><tr><td>Accuracy</td><td>▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁</td></tr><tr><td>Loss</td><td>██████▇▇▆▆▅▅▅▄▄▄▄▃▃▂▂▃▂▂▂▂▂▂▂▂▂▂▂▁▁▂▂▂▂▁</td></tr><tr><td>Val Accuracy</td><td>▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁</td></tr><tr><td>Val Loss</td><td>▁▁▁▁▁▁▁▂▃▃▄▄▅▅▅▇▆▇▇█▇▇▇▇▇▇▇▇▆▇▇▇▇▇███▇▆▇</td></tr></table><br/></div><div class=\"wandb-col\"><h3>Run summary:</h3><br/><table class=\"wandb\"><tr><td>Accuracy</td><td>100.0</td></tr><tr><td>Loss</td><td>0.05168</td></tr><tr><td>Val Accuracy</td><td>100.0</td></tr><tr><td>Val Loss</td><td>0.34992</td></tr></table><br/></div></div>"
+-      ],
+-      "text/plain": [
+-       "<IPython.core.display.HTML object>"
+-      ]
+-     },
+-     "metadata": {},
+-     "output_type": "display_data"
+-    },
+-    {
+-     "data": {
+-      "text/html": [
+-       "Synced <strong style=\"color:#cdcd00\">BaseLine</strong>: <a href=\"https://wandb.ai/ranuga-d/Natural-Language-Processing-with-Disaster-Tweets/runs/2zmnvue5\" target=\"_blank\">https://wandb.ai/ranuga-d/Natural-Language-Processing-with-Disaster-Tweets/runs/2zmnvue5</a><br/>Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)"
+-      ],
+-      "text/plain": [
+-       "<IPython.core.display.HTML object>"
+-      ]
+-     },
+-     "metadata": {},
+-     "output_type": "display_data"
+-    },
+-    {
+-     "data": {
+-      "text/html": [
+-       "Find logs at: <code>./wandb/run-20220513_074930-2zmnvue5/logs</code>"
+-      ],
+-      "text/plain": [
+-       "<IPython.core.display.HTML object>"
+-      ]
+-     },
+-     "metadata": {},
+-     "output_type": "display_data"
+-    }
+-   ],
++   "outputs": [],
+    "source": [
+     "wandb.init(project=PROJECT_NAME,name='BaseLine')\n",
+     "wandb.watch(model)\n",
+@@ -766,7 +628,7 @@
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 32,
++   "execution_count": null,
+    "id": "06fe3d37-4338-4e37-bc8b-fb8ce799aed2",
+    "metadata": {},
+    "outputs": [],
+@@ -787,37 +649,17 @@
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 35,
++   "execution_count": null,
+    "id": "fbc9eff3-0e4c-4afb-a9fa-a1602f80bb92",
+    "metadata": {},
+-   "outputs": [
+-    {
+-     "data": {
+-      "text/plain": [
+-       "Model(\n",
+-       "  (activation): ReLU()\n",
+-       "  (output_activation): Sigmoid()\n",
+-       "  (linear1): Linear(in_features=20127, out_features=512, bias=True)\n",
+-       "  (linear2): Linear(in_features=512, out_features=1024, bias=True)\n",
+-       "  (linear3bn): BatchNorm1d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)\n",
+-       "  (linear4): Linear(in_features=1024, out_features=2048, bias=True)\n",
+-       "  (linear5): Linear(in_features=2048, out_features=1024, bias=True)\n",
+-       "  (output): Linear(in_features=1024, out_features=1, bias=True)\n",
+-       ")"
+-      ]
+-     },
+-     "execution_count": 35,
+-     "metadata": {},
+-     "output_type": "execute_result"
+-    }
+-   ],
++   "outputs": [],
+    "source": [
+     "model.eval()"
+    ]
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 37,
++   "execution_count": null,
+    "id": "0a168e7e-ff7b-4965-9fbf-37d5f6dfa79f",
+    "metadata": {},
+    "outputs": [],
+@@ -827,31 +669,116 @@
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 42,
++   "execution_count": null,
+    "id": "d0394ebd-c4b5-4893-a5ef-9e4f037b16cc",
+    "metadata": {},
+-   "outputs": [
+-    {
+-     "data": {
+-      "text/plain": [
+-       "tensor([0.0002], device='cuda:0', grad_fn=<SelectBackward0>)"
+-      ]
+-     },
+-     "execution_count": 42,
+-     "metadata": {},
+-     "output_type": "execute_result"
+-    }
+-   ],
++   "outputs": [],
+    "source": [
+     "preds[3]"
+    ]
+   },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "9c00daea-0f41-4f2e-a67d-a76c1a379562",
++   "metadata": {},
++   "outputs": [],
++   "source": [
++    "new_test = []"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+    "id": "da43d2ac-2a43-4882-8347-92e60e5098b7",
+    "metadata": {},
+    "outputs": [],
++   "source": [
++    "for X_iter in tqdm(test['text']):\n",
++    "    new_test.append(words_to_int(X_iter,all_words))"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "d347b1a4-4d61-4417-98c1-f896c123dbcd",
++   "metadata": {},
++   "outputs": [],
++   "source": [
++    "new_test = torch.from_numpy(np.array(new_test)).to(device)"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "145838b0-ad03-493e-95b7-a760812f00f3",
++   "metadata": {},
++   "outputs": [],
++   "source": [
++    "preds = model(new_test.float())"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "90812287-9cc7-4cf3-9cc9-1da054467992",
++   "metadata": {},
++   "outputs": [],
++   "source": [
++    "ids = test['id']"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "ed4f84a2-2efb-4bea-a4a5-3d7b938f9340",
++   "metadata": {},
++   "outputs": [],
++   "source": [
++    "submission = {\n",
++    "    \"id\":[],\n",
++    "    \"target\":[]\n",
++    "}"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "3e6ce9bc-1e4c-48c6-ac83-df3f3d9ab0e6",
++   "metadata": {},
++   "outputs": [],
++   "source": [
++    "for pred,id in tqdm(zip(preds,ids)):\n",
++    "    submission['id'].append(id)\n",
++    "    submission['target'].append(int(torch.round(pred)))"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "39192edf-5882-452f-a45e-a836a0ec7567",
++   "metadata": {},
++   "outputs": [],
++   "source": [
++    "submission = pd.DataFrame(submission)"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "31455e03-979c-4caf-82b6-06c2580c9f83",
++   "metadata": {},
++   "outputs": [],
++   "source": [
++    "submission.to_csv(\"./save/base.csv\",index=False)"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "9e44d54d-0db3-4979-8c8a-6a4ff13b3c96",
++   "metadata": {},
++   "outputs": [],
+    "source": []
+   }
+  ],
+diff --git a/X_test.pth b/X_test.pth
+index 3ccc488..012d8fc 100644
+Binary files a/X_test.pth and b/X_test.pth differ
+diff --git a/model-sd.pt b/model-sd.pt
+index e31d9cf..4222ea2 100644
+Binary files a/model-sd.pt and b/model-sd.pt differ
+diff --git a/model-sd.pth b/model-sd.pth
+index e31d9cf..4222ea2 100644
+Binary files a/model-sd.pth and b/model-sd.pth differ
+diff --git a/model.pt b/model.pt
+index 821e7be..21421de 100644
+Binary files a/model.pt and b/model.pt differ
+diff --git a/model.pth b/model.pth
+index 821e7be..21421de 100644
+Binary files a/model.pth and b/model.pth differ
+diff --git a/wandb/latest-run b/wandb/latest-run
+index b5e9a56..51e2be7 120000
+--- a/wandb/latest-run
++++ b/wandb/latest-run
+@@ -1 +1 @@
+-run-20220513_074930-2zmnvue5
+\ No newline at end of file
++run-20220513_131140-vr6qe8dl
+\ No newline at end of file
+diff --git a/y_test.pth b/y_test.pth
+index 78ed1bf..f1fca71 100644
+Binary files a/y_test.pth and b/y_test.pth differ
+diff --git a/y_train.pt b/y_train.pt
+index 01a5666..8c93598 100644
+Binary files a/y_train.pt and b/y_train.pt differ

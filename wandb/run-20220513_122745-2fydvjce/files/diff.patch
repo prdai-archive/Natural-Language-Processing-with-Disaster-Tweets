@@ -1,0 +1,366 @@
+diff --git a/00.ipynb b/00.ipynb
+index 4a84f84..ef7686b 100644
+--- a/00.ipynb
++++ b/00.ipynb
+@@ -370,7 +370,7 @@
+      "name": "stderr",
+      "output_type": "stream",
+      "text": [
+-      "7613it [00:02, 3523.53it/s]\n"
++      "7613it [00:02, 3584.48it/s]\n"
+      ]
+     }
+    ],
+@@ -436,7 +436,7 @@
+      "name": "stderr",
+      "output_type": "stream",
+      "text": [
+-      "7613it [01:36, 79.05it/s]\n"
++      "7613it [01:33, 81.64it/s]\n"
+      ]
+     }
+    ],
+@@ -506,7 +506,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.0625,shuffle=True)"
++    "X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.125,shuffle=True)"
+    ]
+   },
+   {
+@@ -544,12 +544,12 @@
+     "        super().__init__()\n",
+     "        self.activation = ReLU()\n",
+     "        self.output_activation = Sigmoid()\n",
+-    "        self.linear1 = Linear(len(all_words),512)\n",
+-    "        self.linear2 = Linear(512,1024)\n",
+-    "        self.linear3bn = BatchNorm1d(1024)\n",
+-    "        self.linear4 = Linear(1024,2048)\n",
+-    "        self.linear5 = Linear(2048,1024)\n",
+-    "        self.output = Linear(1024,1)\n",
++    "        self.linear1 = Linear(len(all_words),1024)\n",
++    "        self.linear2 = Linear(1024,2048)\n",
++    "        self.linear3bn = BatchNorm1d(2048)\n",
++    "        self.linear4 = Linear(2048,4096)\n",
++    "        self.linear5 = Linear(4096,2048)\n",
++    "        self.output = Linear(2048,1)\n",
+     "    \n",
+     "    def forward(self,X):\n",
+     "        preds = self.activation(self.linear1(X))\n",
+@@ -611,7 +611,7 @@
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 31,
++   "execution_count": null,
+    "id": "8e465964-a28c-4c09-beb2-f0b3911d7ef2",
+    "metadata": {},
+    "outputs": [
+@@ -619,10 +619,23 @@
+      "name": "stderr",
+      "output_type": "stream",
+      "text": [
+-      "\u001b[34m\u001b[1mwandb\u001b[0m: W&B API key is configured (use `wandb login --relogin` to force relogin)\n",
++      "\u001b[34m\u001b[1mwandb\u001b[0m: Currently logged in as: \u001b[33mranuga-d\u001b[0m (use `wandb login --relogin` to force relogin)\n",
+       "RuntimeError: module compiled against API version 0xe but this version of numpy is 0xd\n"
+      ]
+     },
++    {
++     "data": {
++      "text/html": [
++       "wandb version 0.12.16 is available!  To upgrade, please run:\n",
++       " $ pip install wandb --upgrade"
++      ],
++      "text/plain": [
++       "<IPython.core.display.HTML object>"
++      ]
++     },
++     "metadata": {},
++     "output_type": "display_data"
++    },
+     {
+      "data": {
+       "text/html": [
+@@ -638,7 +651,7 @@
+     {
+      "data": {
+       "text/html": [
+-       "Run data is saved locally in <code>/media/indika/Sync/Programmer-RD-AI/Programming/Projects/Python/Artifical-Intelligence/PyTorch/NLP/Natural-Language-Processing-with-Disaster-Tweets/wandb/run-20220513_074930-2zmnvue5</code>"
++       "Run data is saved locally in <code>/media/indika/Sync/Programmer-RD-AI/Programming/Projects/Python/Artifical-Intelligence/PyTorch/NLP/Natural-Language-Processing-with-Disaster-Tweets/wandb/run-20220513_121045-y4hun1ek</code>"
+       ],
+       "text/plain": [
+        "<IPython.core.display.HTML object>"
+@@ -650,7 +663,7 @@
+     {
+      "data": {
+       "text/html": [
+-       "Syncing run <strong><a href=\"https://wandb.ai/ranuga-d/Natural-Language-Processing-with-Disaster-Tweets/runs/2zmnvue5\" target=\"_blank\">BaseLine</a></strong> to <a href=\"https://wandb.ai/ranuga-d/Natural-Language-Processing-with-Disaster-Tweets\" target=\"_blank\">Weights & Biases</a> (<a href=\"https://wandb.me/run\" target=\"_blank\">docs</a>)<br/>"
++       "Syncing run <strong><a href=\"https://wandb.ai/ranuga-d/Natural-Language-Processing-with-Disaster-Tweets/runs/y4hun1ek\" target=\"_blank\">BaseLine</a></strong> to <a href=\"https://wandb.ai/ranuga-d/Natural-Language-Processing-with-Disaster-Tweets\" target=\"_blank\">Weights & Biases</a> (<a href=\"https://wandb.me/run\" target=\"_blank\">docs</a>)<br/>"
+       ],
+       "text/plain": [
+        "<IPython.core.display.HTML object>"
+@@ -663,7 +676,7 @@
+      "name": "stderr",
+      "output_type": "stream",
+      "text": [
+-      "100%|█████████████████████████████████| 100/100 [03:11<00:00,  1.91s/it]\n"
++      "100%|█████████████████████████████████| 100/100 [02:37<00:00,  1.58s/it]\n"
+      ]
+     },
+     {
+@@ -686,7 +699,7 @@
+        "version_minor": 0
+       },
+       "text/plain": [
+-       "VBox(children=(Label(value='0.001 MB of 0.001 MB uploaded (0.000 MB deduped)\\r'), FloatProgress(value=1.0, max…"
++       "VBox(children=(Label(value='0.062 MB of 0.062 MB uploaded (0.000 MB deduped)\\r'), FloatProgress(value=1.0, max…"
+       ]
+      },
+      "metadata": {},
+@@ -700,7 +713,7 @@
+        "    .wandb-row { display: flex; flex-direction: row; flex-wrap: wrap; width: 100% }\n",
+        "    .wandb-col { display: flex; flex-direction: column; flex-basis: 100%; flex: 1; padding: 10px; }\n",
+        "    </style>\n",
+-       "<div class=\"wandb-row\"><div class=\"wandb-col\"><h3>Run history:</h3><br/><table class=\"wandb\"><tr><td>Accuracy</td><td>▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁</td></tr><tr><td>Loss</td><td>██████▇▇▆▆▅▅▅▄▄▄▄▃▃▂▂▃▂▂▂▂▂▂▂▂▂▂▂▁▁▂▂▂▂▁</td></tr><tr><td>Val Accuracy</td><td>▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁</td></tr><tr><td>Val Loss</td><td>▁▁▁▁▁▁▁▂▃▃▄▄▅▅▅▇▆▇▇█▇▇▇▇▇▇▇▇▆▇▇▇▇▇███▇▆▇</td></tr></table><br/></div><div class=\"wandb-col\"><h3>Run summary:</h3><br/><table class=\"wandb\"><tr><td>Accuracy</td><td>100.0</td></tr><tr><td>Loss</td><td>0.05168</td></tr><tr><td>Val Accuracy</td><td>100.0</td></tr><tr><td>Val Loss</td><td>0.34992</td></tr></table><br/></div></div>"
++       "<div class=\"wandb-row\"><div class=\"wandb-col\"><h3>Run history:</h3><br/><table class=\"wandb\"><tr><td>Accuracy</td><td>▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁</td></tr><tr><td>Loss</td><td>█▆▆▆▆▆▆▆▆▅▅▅▆▅▅▅▅▄▄▄▄▄▃▃▃▃▃▂▂▂▂▂▂▁▂▂▁▁▁▁</td></tr><tr><td>Val Accuracy</td><td>▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁</td></tr><tr><td>Val Loss</td><td>▅▁▁▁▁▁▁▁▁▁▂▂▂▁▁▂▂▂▂▃▃▄▄▄▅▅▅▆▅▆▇▇▇▇▇▇█▇██</td></tr></table><br/></div><div class=\"wandb-col\"><h3>Run summary:</h3><br/><table class=\"wandb\"><tr><td>Accuracy</td><td>100.0</td></tr><tr><td>Loss</td><td>0.06348</td></tr><tr><td>Val Accuracy</td><td>100.0</td></tr><tr><td>Val Loss</td><td>0.31865</td></tr></table><br/></div></div>"
+       ],
+       "text/plain": [
+        "<IPython.core.display.HTML object>"
+@@ -712,7 +725,7 @@
+     {
+      "data": {
+       "text/html": [
+-       "Synced <strong style=\"color:#cdcd00\">BaseLine</strong>: <a href=\"https://wandb.ai/ranuga-d/Natural-Language-Processing-with-Disaster-Tweets/runs/2zmnvue5\" target=\"_blank\">https://wandb.ai/ranuga-d/Natural-Language-Processing-with-Disaster-Tweets/runs/2zmnvue5</a><br/>Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)"
++       "Synced <strong style=\"color:#cdcd00\">BaseLine</strong>: <a href=\"https://wandb.ai/ranuga-d/Natural-Language-Processing-with-Disaster-Tweets/runs/y4hun1ek\" target=\"_blank\">https://wandb.ai/ranuga-d/Natural-Language-Processing-with-Disaster-Tweets/runs/y4hun1ek</a><br/>Synced 6 W&B file(s), 0 media file(s), 2 artifact file(s) and 1 other file(s)"
+       ],
+       "text/plain": [
+        "<IPython.core.display.HTML object>"
+@@ -724,7 +737,7 @@
+     {
+      "data": {
+       "text/html": [
+-       "Find logs at: <code>./wandb/run-20220513_074930-2zmnvue5/logs</code>"
++       "Find logs at: <code>./wandb/run-20220513_121045-y4hun1ek/logs</code>"
+       ],
+       "text/plain": [
+        "<IPython.core.display.HTML object>"
+@@ -766,7 +779,7 @@
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 32,
++   "execution_count": null,
+    "id": "06fe3d37-4338-4e37-bc8b-fb8ce799aed2",
+    "metadata": {},
+    "outputs": [],
+@@ -787,7 +800,7 @@
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 35,
++   "execution_count": null,
+    "id": "fbc9eff3-0e4c-4afb-a9fa-a1602f80bb92",
+    "metadata": {},
+    "outputs": [
+@@ -797,6 +810,7 @@
+        "Model(\n",
+        "  (activation): ReLU()\n",
+        "  (output_activation): Sigmoid()\n",
++       "  (dropout): Dropout(p=0.5, inplace=False)\n",
+        "  (linear1): Linear(in_features=20127, out_features=512, bias=True)\n",
+        "  (linear2): Linear(in_features=512, out_features=1024, bias=True)\n",
+        "  (linear3bn): BatchNorm1d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)\n",
+@@ -806,7 +820,7 @@
+        ")"
+       ]
+      },
+-     "execution_count": 35,
++     "execution_count": 33,
+      "metadata": {},
+      "output_type": "execute_result"
+     }
+@@ -817,7 +831,7 @@
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 37,
++   "execution_count": null,
+    "id": "0a168e7e-ff7b-4965-9fbf-37d5f6dfa79f",
+    "metadata": {},
+    "outputs": [],
+@@ -827,17 +841,17 @@
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 42,
++   "execution_count": null,
+    "id": "d0394ebd-c4b5-4893-a5ef-9e4f037b16cc",
+    "metadata": {},
+    "outputs": [
+     {
+      "data": {
+       "text/plain": [
+-       "tensor([0.0002], device='cuda:0', grad_fn=<SelectBackward0>)"
++       "tensor([0.1775], device='cuda:0', grad_fn=<SelectBackward0>)"
+       ]
+      },
+-     "execution_count": 42,
++     "execution_count": 35,
+      "metadata": {},
+      "output_type": "execute_result"
+     }
+@@ -846,11 +860,123 @@
+     "preds[3]"
+    ]
+   },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "9c00daea-0f41-4f2e-a67d-a76c1a379562",
++   "metadata": {},
++   "outputs": [],
++   "source": [
++    "new_test = []"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+    "id": "da43d2ac-2a43-4882-8347-92e60e5098b7",
+    "metadata": {},
++   "outputs": [
++    {
++     "name": "stderr",
++     "output_type": "stream",
++     "text": [
++      "100%|███████████████████████████████| 3263/3263 [00:38<00:00, 84.05it/s]\n"
++     ]
++    }
++   ],
++   "source": [
++    "for X_iter in tqdm(test['text']):\n",
++    "    new_test.append(words_to_int(X_iter,all_words))"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "d347b1a4-4d61-4417-98c1-f896c123dbcd",
++   "metadata": {},
++   "outputs": [],
++   "source": [
++    "new_test = torch.from_numpy(np.array(new_test)).to(device)"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "145838b0-ad03-493e-95b7-a760812f00f3",
++   "metadata": {},
++   "outputs": [],
++   "source": [
++    "preds = model(new_test.float())"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "90812287-9cc7-4cf3-9cc9-1da054467992",
++   "metadata": {},
++   "outputs": [],
++   "source": [
++    "ids = test['id']"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "ed4f84a2-2efb-4bea-a4a5-3d7b938f9340",
++   "metadata": {},
++   "outputs": [],
++   "source": [
++    "submission = {\n",
++    "    \"id\":[],\n",
++    "    \"target\":[]\n",
++    "}"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "3e6ce9bc-1e4c-48c6-ac83-df3f3d9ab0e6",
++   "metadata": {},
++   "outputs": [
++    {
++     "name": "stderr",
++     "output_type": "stream",
++     "text": [
++      "3263it [00:00, 51458.53it/s]\n"
++     ]
++    }
++   ],
++   "source": [
++    "for pred,id in tqdm(zip(preds,ids)):\n",
++    "    submission['id'].append(id)\n",
++    "    submission['target'].append(int(torch.round(pred)))"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "39192edf-5882-452f-a45e-a836a0ec7567",
++   "metadata": {},
++   "outputs": [],
++   "source": [
++    "submission = pd.DataFrame(submission)"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "31455e03-979c-4caf-82b6-06c2580c9f83",
++   "metadata": {},
++   "outputs": [],
++   "source": [
++    "submission.to_csv(\"./save/base.csv\",index=False)"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "9e44d54d-0db3-4979-8c8a-6a4ff13b3c96",
++   "metadata": {},
+    "outputs": [],
+    "source": []
+   }
+diff --git a/X_test.pth b/X_test.pth
+index 3ccc488..012d8fc 100644
+Binary files a/X_test.pth and b/X_test.pth differ
+diff --git a/model-sd.pt b/model-sd.pt
+index e31d9cf..db8a0ac 100644
+Binary files a/model-sd.pt and b/model-sd.pt differ
+diff --git a/model-sd.pth b/model-sd.pth
+index e31d9cf..db8a0ac 100644
+Binary files a/model-sd.pth and b/model-sd.pth differ
+diff --git a/model.pt b/model.pt
+index 821e7be..68f3b2b 100644
+Binary files a/model.pt and b/model.pt differ
+diff --git a/model.pth b/model.pth
+index 821e7be..68f3b2b 100644
+Binary files a/model.pth and b/model.pth differ
+diff --git a/wandb/latest-run b/wandb/latest-run
+index b5e9a56..fff7f43 120000
+--- a/wandb/latest-run
++++ b/wandb/latest-run
+@@ -1 +1 @@
+-run-20220513_074930-2zmnvue5
+\ No newline at end of file
++run-20220513_122745-2fydvjce
+\ No newline at end of file
+diff --git a/y_test.pth b/y_test.pth
+index 78ed1bf..f1fca71 100644
+Binary files a/y_test.pth and b/y_test.pth differ
+diff --git a/y_train.pt b/y_train.pt
+index 01a5666..8c93598 100644
+Binary files a/y_train.pt and b/y_train.pt differ
