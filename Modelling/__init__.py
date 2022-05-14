@@ -15,10 +15,17 @@ from tqdm import tqdm
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.metrics import f1_score
 from sklearn import svm
+import tensorflow as tf
+import tensorflow_hub as hub
+import tensorflow_datasets as tfds
 PROJECT_NAME = "Natural-Language-Processing-with-Disaster-Tweets"
 np.random.seed(55)
 stemmer = PorterStemmer()
 device = "cuda"
+print("Version: ", tf.__version__)
+print("Eager mode: ", tf.executing_eagerly())
+print("Hub version: ", hub.__version__)
+print("GPU is", "available" if tf.config.list_physical_devices('GPU') else "NOT AVAILABLE")
 from Modelling.dataset import *
 from Modelling.metrics import *
 from Modelling.modelling import *
