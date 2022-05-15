@@ -36,7 +36,7 @@ class TensorFlow_Modelling:
             batch_size=32,
             validation_data=(X_test, y_test),
             verbose=1,
-            hooks=[wandb.tensorflow.WandbHook(steps_per_log=10)]
+            hooks=[wandb.tensorflow.WandbHook(steps_per_log=10)],
         )
         results = model.evaluate(X_test, y_test)
         return results, history, model
