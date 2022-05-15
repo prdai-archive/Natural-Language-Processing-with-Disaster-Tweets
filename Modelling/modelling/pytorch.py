@@ -2,7 +2,7 @@ from Modelling import *
 
 
 class Model(Module):
-    def __init__(self, activation=ReLU, neurons=512):
+    def __init__(self, activation=ReLU, neurons=512, all_words=[]):
         super().__init__()
         self.activation = activation()
         self.output_activation = Sigmoid()
@@ -35,11 +35,12 @@ class Pytorch_Modelling:
         y_test,
         model=Model(activation=LeakyReLU, neurons=1024).to(device),
         criterion=MSELoss(),
-        optimizer=Adam(model.parameters(), lr=0.001),
+        optimizer=Adam,
         epochs=100,
         batch_size=32,
         name="BaseLine",
     ):
+        optimizer = optimizer(model.parameters(), lr=0.001)
         wandb.init(project=PROJECT_NAME, name=name)
         wandb.watch(model, log_freq=10)
         for _ in tqdm(range(epochs)):
