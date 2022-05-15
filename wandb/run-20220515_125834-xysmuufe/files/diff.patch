@@ -1,0 +1,168 @@
+diff --git a/Modelling/dataset/__init__.py b/Modelling/dataset/__init__.py
+index 3b0365f..e0c33dd 100644
+--- a/Modelling/dataset/__init__.py
++++ b/Modelling/dataset/__init__.py
+@@ -1,4 +1,3 @@
+-from Modelling.dataset.huggingface import *
+ from Modelling.dataset.pytorch import *
+ from Modelling.dataset.sklearn import *
+ from Modelling.dataset.tensorflow import *
+diff --git a/Modelling/dataset/sklearn.py b/Modelling/dataset/sklearn.py
+index 98f8b14..706a8a1 100644
+--- a/Modelling/dataset/sklearn.py
++++ b/Modelling/dataset/sklearn.py
+@@ -4,10 +4,10 @@ from Modelling import *
+ class Sklearn_Data_Loader:
+     def __init__(
+         self,
+-        data:pd.DataFrame = pd.read_csv("./Modelling/dataset/data/train.csv"),
+-        test:pd.DataFrame = pd.read_csv("./Modelling/dataset/data/test.csv"),
+-        all_words:list = [],
+-        tags:list = []
++        data: pd.DataFrame = pd.read_csv("./Modelling/dataset/data/train.csv"),
++        test: pd.DataFrame = pd.read_csv("./Modelling/dataset/data/test.csv"),
++        all_words: list = [],
++        tags: list = [],
+     ):
+         self.data = data
+         self.data = self.data.sample(frac=1)
+@@ -16,34 +16,33 @@ class Sklearn_Data_Loader:
+         self.y = self.data["target"]
+         self.y = np.array(self.y.tolist())
+         self.all_words = all_words
+-        self.tags = list(self.y.value_counts().to_dict().keys())
+ 
+-    def create(self,count_vectorizer=False):
+-        self.X_train,self.X_test,self.y_train,self.y_test = train_test_split(self.X,self.y,test_size=0.0625,shuffle=True)
++    def create(self, count_vectorizer=True):
++        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
++            self.X, self.y, test_size=0.0625, shuffle=True
++        )
+         if count_vectorizer:
+             self.vectorizer = CountVectorizer(binary=1)
+         else:
+             self.vectorizer = TfidfVectorizer()
+         self.X_train = self.vectorizer.fit_transform(self.X_train)
+         self.X_test = self.vectorizer.transform(self.X_test)
+-        self.X_train = np.array(self.X_train)
+-        self.y_train = np.array(self.y_train)
+-        self.X_test = np.array(self.X_test)
+-        self.y_test = np.array(self.y_test)
+-        return self.X_train,self.X_test,self.y_train,self.y_test,self.vectorizer
++        # self.X_train = np.array(self.X_train)
++        # self.y_train = np.array(self.y_train)
++        # self.X_test = np.array(self.X_test)
++        # self.y_test = np.array(self.y_test)
++        return self.X_train, self.X_test, self.y_train, self.y_test, self.vectorizer
+ 
+     def create_test(self):
+         self.test = self.vectorizer(self.test)
+         return self.test
+-    def create_submission(self,model):
++
++    def create_submission(self, model):
+         preds = model.predict(self.create_test())
+-        ids = self.test['id']
+-        submission = {
+-            "id":[],
+-            "target":[]
+-        }
+-        for pred,id in tqdm(zip(preds,ids)):
+-            submission['id'].append(id)
+-            submission['target'].append(int(pred))
++        ids = self.test["id"]
++        submission = {"id": [], "target": []}
++        for pred, id in tqdm(zip(preds, ids)):
++            submission["id"].append(id)
++            submission["target"].append(int(pred))
+         submission = pd.DataFrame(submission)
+         return submission
+diff --git a/Modelling/modelling/__init__.py b/Modelling/modelling/__init__.py
+index 242f109..03ce08d 100644
+--- a/Modelling/modelling/__init__.py
++++ b/Modelling/modelling/__init__.py
+@@ -1,4 +1,3 @@
+-
+ from Modelling.modelling.pytorch import *
+ from Modelling.modelling.sklearn import *
+ from Modelling.modelling.tensorflow import *
+diff --git a/Modelling/modelling/pytorch.py b/Modelling/modelling/pytorch.py
+index 8df1e89..cb204a2 100644
+--- a/Modelling/modelling/pytorch.py
++++ b/Modelling/modelling/pytorch.py
+@@ -2,7 +2,7 @@ from Modelling import *
+ 
+ 
+ class Model(Module):
+-    def __init__(self, activation=ReLU, neurons=512):
++    def __init__(self, activation=ReLU, neurons=512, all_words=[]):
+         super().__init__()
+         self.activation = activation()
+         self.output_activation = Sigmoid()
+@@ -35,11 +35,12 @@ class Pytorch_Modelling:
+         y_test,
+         model=Model(activation=LeakyReLU, neurons=1024).to(device),
+         criterion=MSELoss(),
+-        optimizer=Adam(model.parameters(), lr=0.001),
++        optimizer=Adam,
+         epochs=100,
+         batch_size=32,
+         name="BaseLine",
+     ):
++        optimizer = optimizer(model.parameters(), lr=0.001)
+         wandb.init(project=PROJECT_NAME, name=name)
+         wandb.watch(model, log_freq=10)
+         for _ in tqdm(range(epochs)):
+diff --git a/Modelling/modelling/sklearn.py b/Modelling/modelling/sklearn.py
+index df7ab8f..68238a3 100644
+--- a/Modelling/modelling/sklearn.py
++++ b/Modelling/modelling/sklearn.py
+@@ -4,11 +4,12 @@ from Modelling import *
+ class Sklearn_Modelling:
+     def train(self, model, X_train, y_train, X_test, y_test, name):
+         wandb.init(project=PROJECT_NAME, name=name)
+-        model = model()
+         model.fit(X_train, y_train)
+         preds = model.predict(X_test)
+         preds_prob = model.predict_prob(X_test)
+-        print(list(y_test))
++        print("*" * 50)
++        print(sorted(set(list(y_test))))
++        print("*" * 50)
+         wandb.sklearn.plot_confusion_matrix(y_test, preds, y_test)
+         wandb.sklearn.plot_classifier(
+             model,
+diff --git a/Modelling/modelling/tensorflow.py b/Modelling/modelling/tensorflow.py
+index 5de93c1..de31fa3 100644
+--- a/Modelling/modelling/tensorflow.py
++++ b/Modelling/modelling/tensorflow.py
+@@ -36,7 +36,7 @@ class TensorFlow_Modelling:
+             batch_size=32,
+             validation_data=(X_test, y_test),
+             verbose=1,
+-            hooks=[wandb.tensorflow.WandbHook(steps_per_log=10)]
++            hooks=[wandb.tensorflow.WandbHook(steps_per_log=10)],
+         )
+         results = model.evaluate(X_test, y_test)
+         return results, history, model
+diff --git a/run.py b/run.py
+index a1bbad8..92c8316 100644
+--- a/run.py
++++ b/run.py
+@@ -2,5 +2,6 @@ from Modelling import *
+ 
+ sdl = Sklearn_Data_Loader()
+ X_train, X_test, y_train, y_test, vectorizer = sdl.create()
++model = svm.SVC(C=16, kernel="linear", gamma="auto")
+ sm = Sklearn_Modelling()
+-sm.train(X_train, X_test, y_train, y_test,"BaseLine")
++sm.train(model, X_train, X_test, y_train, y_test, "BaseLine")
+diff --git a/wandb/latest-run b/wandb/latest-run
+index ae3df5e..d398cdc 120000
+--- a/wandb/latest-run
++++ b/wandb/latest-run
+@@ -1 +1 @@
+-run-20220514_150149-1sxavw9o
+\ No newline at end of file
++run-20220515_125834-xysmuufe
+\ No newline at end of file

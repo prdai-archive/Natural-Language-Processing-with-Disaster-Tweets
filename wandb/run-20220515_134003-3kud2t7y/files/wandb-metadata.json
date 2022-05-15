@@ -1,0 +1,24 @@
+{
+    "os": "Linux-5.13.0-41-generic-x86_64-with-glibc2.10",
+    "python": "3.8.8",
+    "heartbeatAt": "2022-05-15T08:10:06.813370",
+    "startedAt": "2022-05-15T08:10:03.523746",
+    "docker": null,
+    "gpu": "NVIDIA GeForce RTX 3060",
+    "gpu_count": 1,
+    "cpu_count": 6,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "run.py",
+    "codePath": "run.py",
+    "git": {
+        "remote": "https://github.com/Programmer-RD-AI/Natural-Language-Processing-with-Disaster-Tweets.git",
+        "commit": "f581c49b9fbb9b98f171799df713929de98cc81e"
+    },
+    "email": "go2ranuga@gmail.com",
+    "root": "/media/indika/Sync/Programmer-RD-AI/Programming/Projects/Python/Artifical-Intelligence/PyTorch/NLP/Natural-Language-Processing-with-Disaster-Tweets",
+    "host": "programmer-rd-ai",
+    "username": "indika",
+    "executable": "/media/indika/Sync/anaconda3/bin/python3"
+}
