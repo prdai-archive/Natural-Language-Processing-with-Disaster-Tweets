@@ -6,7 +6,7 @@ def accuracy(model, X, y):
     total = 0
     preds = model(X.float())
     for pred, y_batch in zip(preds, y):
-        pred = int(torch.round(pred))
+        pred = int(torch.argmax(pred))
         y_batch = int(y_batch)
         if pred == y_batch:
             correct += 1
@@ -15,5 +15,5 @@ def accuracy(model, X, y):
     return acc
 def g_loss(model,X,y,criterion):
     preds = model(X.float())
-    loss = criterion(preds.view(-1),y.float().view(-1))
+    loss = criterion(preds.float(), y.long())
     return loss.item()
