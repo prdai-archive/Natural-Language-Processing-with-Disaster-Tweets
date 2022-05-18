@@ -35,11 +35,11 @@ class Sklearn_Data_Loader:
         return self.X_train, self.X_test, self.y_train, self.y_test, self.vectorizer
 
     def create_test(self):
-        self.test = self.vectorizer(self.test)
-        return self.test
+        return self.vectorizer.transform(self.test["text"])
 
     def create_submission(self, model):
         preds = model.predict(self.create_test())
+        print(preds)
         ids = self.test["id"]
         submission = {"id": [], "target": []}
         for pred, id in tqdm(zip(preds, ids)):
