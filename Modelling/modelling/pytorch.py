@@ -2,28 +2,21 @@ from Modelling import *
 
 
 class Model(Module):
-    def __init__(self, activation=ReLU, neurons=512, all_words=[]):
-        super().__init__()
-        self.activation = activation()
-        self.output_activation = Sigmoid()
-        self.linear1 = Linear(len(all_words), neurons)
-        self.linear2 = Linear(neurons, neurons * 2)
-        self.linearbn = BatchNorm1d(neurons * 2)
-        self.linear3 = Linear(neurons * 2, neurons * 2)
-        self.linear4 = Linear(neurons * 2, neurons * 3)
-        self.linear5 = Linear(neurons * 3, neurons * 2)
-        self.output = Linear(neurons * 2, 1)
+    def __init__(self, input_size, hidden_size=512, num_classes=1):
+        super(Model, self).__init__()
+        self.l1 = Linear(input_size, hidden_size)
+        self.l2 = Linear(hidden_size, hidden_size)
+        self.l3 = Linear(hidden_size, num_classes)
+        self.relu = ReLU()
 
-    def forward(self, X):
-        preds = self.activation(self.linear1(X))
-        preds = self.activation(self.linear2(preds))
-        preds = self.activation(self.linear3(preds))
-        preds = self.activation(self.linearbn(preds))
-        preds = self.activation(self.linear3(preds))
-        preds = self.activation(self.linear4(preds))
-        preds = self.activation(self.linear5(preds))
-        preds = self.output_activation(self.output(preds))
-        return preds
+    def forward(self, x):
+        out = self.l1(x)
+        out = self.relu(out)
+        out = self.l2(out)
+        out = self.relu(out)
+        out = self.l3(out)
+        # no activation and no softmax at the end
+        return out
 
 
 class Pytorch_Modelling:
@@ -33,18 +26,23 @@ class Pytorch_Modelling:
         X_test,
         y_train,
         y_test,
-        model=Model(activation=LeakyReLU, neurons=1024).to(device),
-        criterion=MSELoss(),
+        all_words,
+        model=Model,
+        criterion=CrossEntropyLoss(),  # TODO 
         optimizer=Adam,
         epochs=100,
         batch_size=32,
         name="BaseLine",
     ):
+        model = Model(input_size=len(all_words)).to(device)
         optimizer = optimizer(model.parameters(), lr=0.001)
         wandb.init(project=PROJECT_NAME, name=name)
         wandb.watch(model, log_freq=10)
+        torch.cuda.empty_cache()
         for _ in tqdm(range(epochs)):
+            torch.cuda.empty_cache()
             for i in range(0, len(X_train), batch_size):
+                torch.cuda.empty_cache()
                 try:
                     X_batch = X_train[i : i + batch_size]
                     y_batch = y_train[i : i + batch_size]
@@ -59,10 +57,11 @@ class Pytorch_Modelling:
             wandb.log(
                 {
                     "Val Accuracy": accuracy(model, X_test, y_test),
-                    "Val Loss": g_loss(model, X_test, y_test),
+                    "Val Loss": g_loss(model, X_test, y_test,criterion),
                     "Accuracy": accuracy(model, X_train, y_train),
-                    "Loss": g_loss(model, X_train, y_train),
+                    "Loss": g_loss(model, X_train, y_train,criterion),
                 }
             )
             model.train()
         wandb.finish()
+        return model
