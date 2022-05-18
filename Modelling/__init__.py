@@ -19,12 +19,13 @@ import tensorflow as tf
 import tensorflow_hub as hub
 import tensorflow_datasets as tfds
 import warnings
-
+import os
 warnings.filterwarnings("ignore")
 PROJECT_NAME = "Natural-Language-Processing-with-Disaster-Tweets"
 np.random.seed(55)
 stemmer = PorterStemmer()
 device = "cuda"
+os.environ["CUDA_LAUNCH_BLOCKING"]="1"
 print("Version: ", tf.__version__)
 print("Eager mode: ", tf.executing_eagerly())
 print("Hub version: ", hub.__version__)
