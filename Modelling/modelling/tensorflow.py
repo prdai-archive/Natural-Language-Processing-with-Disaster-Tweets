@@ -8,7 +8,7 @@ class TensorFlow_Modelling:
         X_test,
         y_train,
         y_test,
-        name,
+        name="BaseLine",
         model="https://tfhub.dev/google/nnlm-en-dim50/2",
         trainable=True,
         tl_model_output=16,
@@ -36,7 +36,12 @@ class TensorFlow_Modelling:
             batch_size=32,
             validation_data=(X_test, y_test),
             verbose=1,
-            hooks=[wandb.tensorflow.WandbHook(steps_per_log=10)],
         )
         results = model.evaluate(X_test, y_test)
-        return results, history, model
+        wandb.log({
+            "Accuracy":model.evaluate(X_train, y_train)[0],
+            "Loss":model.evaluate(X_train, y_train)[1],
+             "Val Accuracy":model.evaluate(X_test, y_test)[0],
+            "Val Loss":model.evaluate(X_test, y_test)[1],
+        })
+        return model
