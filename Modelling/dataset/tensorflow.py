@@ -12,13 +12,15 @@ class TensorFlow_Data_Loader:
         self.test = test
         self.X = np.array(self.data["text"])
         self.y = np.array(self.data["target"])
+        self.X_train,self.X_test,self.y_train,self.y_test = train_test_split(self.X,self.y,test_size=0.0625,shuffle=True)
 
     def create(self):
-        return self.X,self.y,len(self.X),len(self.y)
+        return self.X_train,self.X_test,self.y_train,self.y_test
 
     def create_test(self):
-        self.test = np.array(self.test)
+        self.test = tf.Tensor(np.array(self.test),value_index=0,dtype=tf.int64)
         return self.test
+
 
     def create_submission(self, model):
         preds = model.predict(self.create_test())
