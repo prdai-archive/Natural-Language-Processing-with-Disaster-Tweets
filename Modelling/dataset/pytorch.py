@@ -78,15 +78,16 @@ class Pytorch_Data_Loader:
         new_test = []
         for X_iter in tqdm(self.test["text"]):
             new_test.append(self.words_to_int(X_iter, self.all_words))
-        new_test = torch.from_numpy(np.array(new_test)).to(device)
+        new_test = torch.from_numpy(np.array(new_test)).to("cpu")
         return new_test
 
     def create_submission(self, model):
+        model.to("cpu")
         preds = model(self.create_test().float())
         ids = self.test["id"]
         submission = {"id": [], "target": []}
         for pred, id in tqdm(zip(preds, ids)):
             submission["id"].append(id)
-            submission["target"].append(int(torch.round(pred)))
+            submission["target"].append(int(torch.argmax(pred)))
         submission = pd.DataFrame(submission)
         return submission
