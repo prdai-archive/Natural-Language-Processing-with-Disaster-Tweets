@@ -2,7 +2,7 @@ from Modelling import *
 
 
 class Model(Module):
-    def __init__(self, input_size, hidden_size=512, num_classes=1):
+    def __init__(self, input_size, hidden_size=256, num_classes=2):
         super(Model, self).__init__()
         self.l1 = Linear(input_size, hidden_size)
         self.l2 = Linear(hidden_size, hidden_size)
@@ -47,19 +47,19 @@ class Pytorch_Modelling:
                     X_batch = X_train[i : i + batch_size]
                     y_batch = y_train[i : i + batch_size]
                     preds = model(X_batch.float())
-                    loss = criterion(preds.float().view(-1), y_batch.float().view(-1))
+                    loss = criterion(preds.float(), y_batch.long())
                     optimizer.zero_grad()
                     loss.backward()
                     optimizer.step()
-                except:
-                    pass
+                except Exception as e:
+                    print(e)
             model.eval()
             wandb.log(
                 {
                     "Val Accuracy": accuracy(model, X_test, y_test),
-                    "Val Loss": g_loss(model, X_test, y_test,criterion),
+                    "Val Loss": g_loss(model, X_test, y_test.long(),criterion),
                     "Accuracy": accuracy(model, X_train, y_train),
-                    "Loss": g_loss(model, X_train, y_train,criterion),
+                    "Loss": g_loss(model, X_train, y_train.long(),criterion),
                 }
             )
             model.train()
