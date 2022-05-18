@@ -13,7 +13,7 @@ def accuracy(model, X, y):
         total += 1
     acc = round(correct / total, 3) * 100
     return acc
-def g_loss(model,X,y):
+def g_loss(model,X,y,criterion):
     preds = model(X.float())
     loss = criterion(preds.view(-1),y.float().view(-1))
     return loss.item()
