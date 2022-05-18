@@ -1,9 +1,11 @@
 from Modelling import *
 
-sdl = Sklearn_Data_Loader()
-X_train, X_test, y_train, y_test, vectorizer = sdl.create()
+pdl = Pytorch_Data_Loader()
+new_X, new_y, X, y, X_train, X_test, y_train, y_test, all_words = pdl.create()
+pm = Pytorch_Modelling()
+model = pm.train(X_train, X_test, y_train, y_test, all_words=all_words)
+submission = pdl.create_submission(model)
+submission.to_csv("./Pytorch-BaseLine.csv", index=False)
 
-model = svm.SVC(C=16, kernel="linear", gamma="auto",probability=True)
-sm = Sklearn_Modelling()
-model, preds, preds_prob= sm.train(model,X_train, y_train, X_test, y_test, "BaseLine")
-sdl.create_submission(model)
+# SKlearn = 77%
+# Pytorch =
