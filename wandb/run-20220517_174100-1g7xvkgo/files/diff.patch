@@ -1,0 +1,72 @@
+diff --git a/Modelling/dataset/sklearn.py b/Modelling/dataset/sklearn.py
+index 3ae6c92..564a5c6 100644
+--- a/Modelling/dataset/sklearn.py
++++ b/Modelling/dataset/sklearn.py
+@@ -35,11 +35,11 @@ class Sklearn_Data_Loader:
+         return self.X_train, self.X_test, self.y_train, self.y_test, self.vectorizer
+ 
+     def create_test(self):
+-        self.test = self.vectorizer(self.test)
+-        return self.test
++        return self.vectorizer.transform(self.test)
+ 
+     def create_submission(self, model):
+         preds = model.predict(self.create_test())
++        print(self.test)
+         ids = self.test["id"]
+         submission = {"id": [], "target": []}
+         for pred, id in tqdm(zip(preds, ids)):
+diff --git a/Modelling/modelling/sklearn.py b/Modelling/modelling/sklearn.py
+index 251b67e..ae33ded 100644
+--- a/Modelling/modelling/sklearn.py
++++ b/Modelling/modelling/sklearn.py
+@@ -8,14 +8,16 @@ class Sklearn_Modelling:
+         preds = model.predict(X_test)
+         preds_prob = model.predict_proba(X_test)
+         labels = sorted(set(list(y_test)))
+-        wandb.log({
+-            "Accuracy":accuracy_score(preds,y_test),
+-            "F1 Score":f1_score(preds,y_test),
+-            "Precisions":precision_score(preds,y_test)
+-        })
++        wandb.log(
++            {
++                "Accuracy": accuracy_score(preds, y_test),
++                "F1 Score": f1_score(preds, y_test),
++                "Precisions": precision_score(preds, y_test),
++            }
++        )
+         wandb.sklearn.plot_confusion_matrix(y_test, preds, labels)
+-        wandb.sklearn.plot_classifier(model, X_train, X_test, y_train, y_test, preds, preds_prob, {0:0,1:1},
+-                                                         model_name=f'{model}')
++        # wandb.sklearn.plot_classifier(model, X_train, X_test, y_train, y_test, preds, preds_prob, {0:0,1:1},
++        #                                                  model_name=f'{model}')
+         wandb.sklearn.plot_roc(y_test, preds_prob, labels)
+         wandb.sklearn.plot_precision_recall(y_test, preds_prob, labels)
+         wandb.sklearn.plot_confusion_matrix(y_test, preds, labels)
+diff --git a/run.py b/run.py
+index e52dc64..1bb36cf 100644
+--- a/run.py
++++ b/run.py
+@@ -2,8 +2,8 @@ from Modelling import *
+ 
+ sdl = Sklearn_Data_Loader()
+ X_train, X_test, y_train, y_test, vectorizer = sdl.create()
+-
+-model = svm.SVC(C=16, kernel="linear", gamma="auto",probability=True)
++model = svm.SVC(C=16, kernel="linear", gamma="auto", probability=True)
+ sm = Sklearn_Modelling()
+-model, preds, preds_prob= sm.train(model,X_train, y_train, X_test, y_test, "BaseLine")
+-sdl.create_submission(model)
++model, preds, preds_prob = sm.train(model, X_train, y_train, X_test, y_test, "BaseLine")
++submission = sdl.create_submission(model)
++submission.to_csv("./Sklearn-BaseLine.csv", index=False)
+diff --git a/wandb/latest-run b/wandb/latest-run
+index 11c7bcc..b41e359 120000
+--- a/wandb/latest-run
++++ b/wandb/latest-run
+@@ -1 +1 @@
+-run-20220515_134213-2l3l54j9
+\ No newline at end of file
++run-20220517_174100-1g7xvkgo
+\ No newline at end of file

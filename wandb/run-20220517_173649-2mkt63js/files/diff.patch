@@ -1,0 +1,62 @@
+diff --git a/Modelling/dataset/sklearn.py b/Modelling/dataset/sklearn.py
+index 3ae6c92..9aaf27a 100644
+--- a/Modelling/dataset/sklearn.py
++++ b/Modelling/dataset/sklearn.py
+@@ -35,7 +35,7 @@ class Sklearn_Data_Loader:
+         return self.X_train, self.X_test, self.y_train, self.y_test, self.vectorizer
+ 
+     def create_test(self):
+-        self.test = self.vectorizer(self.test)
++        self.test = self.vectorizer.transform(self.test)
+         return self.test
+ 
+     def create_submission(self, model):
+diff --git a/Modelling/modelling/sklearn.py b/Modelling/modelling/sklearn.py
+index 251b67e..ae33ded 100644
+--- a/Modelling/modelling/sklearn.py
++++ b/Modelling/modelling/sklearn.py
+@@ -8,14 +8,16 @@ class Sklearn_Modelling:
+         preds = model.predict(X_test)
+         preds_prob = model.predict_proba(X_test)
+         labels = sorted(set(list(y_test)))
+-        wandb.log({
+-            "Accuracy":accuracy_score(preds,y_test),
+-            "F1 Score":f1_score(preds,y_test),
+-            "Precisions":precision_score(preds,y_test)
+-        })
++        wandb.log(
++            {
++                "Accuracy": accuracy_score(preds, y_test),
++                "F1 Score": f1_score(preds, y_test),
++                "Precisions": precision_score(preds, y_test),
++            }
++        )
+         wandb.sklearn.plot_confusion_matrix(y_test, preds, labels)
+-        wandb.sklearn.plot_classifier(model, X_train, X_test, y_train, y_test, preds, preds_prob, {0:0,1:1},
+-                                                         model_name=f'{model}')
++        # wandb.sklearn.plot_classifier(model, X_train, X_test, y_train, y_test, preds, preds_prob, {0:0,1:1},
++        #                                                  model_name=f'{model}')
+         wandb.sklearn.plot_roc(y_test, preds_prob, labels)
+         wandb.sklearn.plot_precision_recall(y_test, preds_prob, labels)
+         wandb.sklearn.plot_confusion_matrix(y_test, preds, labels)
+diff --git a/run.py b/run.py
+index e52dc64..4af790a 100644
+--- a/run.py
++++ b/run.py
+@@ -2,7 +2,6 @@ from Modelling import *
+ 
+ sdl = Sklearn_Data_Loader()
+ X_train, X_test, y_train, y_test, vectorizer = sdl.create()
+-
+ model = svm.SVC(C=16, kernel="linear", gamma="auto",probability=True)
+ sm = Sklearn_Modelling()
+ model, preds, preds_prob= sm.train(model,X_train, y_train, X_test, y_test, "BaseLine")
+diff --git a/wandb/latest-run b/wandb/latest-run
+index 11c7bcc..d9f1672 120000
+--- a/wandb/latest-run
++++ b/wandb/latest-run
+@@ -1 +1 @@
+-run-20220515_134213-2l3l54j9
+\ No newline at end of file
++run-20220517_173649-2mkt63js
+\ No newline at end of file

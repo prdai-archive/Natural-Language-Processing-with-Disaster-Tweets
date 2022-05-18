@@ -1,0 +1,282 @@
+diff --git a/Modelling/dataset/pytorch.py b/Modelling/dataset/pytorch.py
+index cb3aa18..96279e7 100644
+--- a/Modelling/dataset/pytorch.py
++++ b/Modelling/dataset/pytorch.py
+@@ -4,13 +4,13 @@ from Modelling import *
+ class Pytorch_Data_Loader:
+     def __init__(
+         self,
+-        data:pd.DataFrame = pd.read_csv("./Modelling/dataset/data/train.csv"),
+-        test:pd.DataFrame = pd.read_csv("./Modelling/dataset/data/test.csv"),
+-        all_words:list = [],
+-        tags:list = []
++        data: pd.DataFrame = pd.read_csv("./Modelling/dataset/data/train.csv"),
++        test: pd.DataFrame = pd.read_csv("./Modelling/dataset/data/test.csv"),
++        all_words: list = [],
++        tags: list = [],
+     ):
+         self.data = data
+-        self.data = self.data.sample(frac=1)
++        self.data = self.data.sample(frac=1)[:5000]
+         self.test = test
+         self.X = self.data["text"]
+         self.y = self.data["target"]
+@@ -32,48 +32,61 @@ class Pytorch_Data_Loader:
+             if all_words[i] in new_words:
+                 list_of_os[i] = 1.0
+         return list_of_os
++
+     def create_all_words(self):
+-        for x_iter,y_iter in tqdm(zip(self.X,self.y)):
++        for x_iter, y_iter in tqdm(zip(self.X, self.y)):
+             x_iter = self.tokenize(x_iter)
+             new_x_iter = []
+             for x_iter_i in x_iter:
+                 new_x_iter.append(self.stem(x_iter_i))
+             self.all_words.extend(new_x_iter)
+             self.tags.append(y_iter)
+-        self.all_words = np.random.shuffle(self.all_words)
++        np.random.shuffle(self.all_words)
+         self.all_words = sorted(set(self.all_words))
+         self.tags = sorted(set(self.tags))
+-        return self.all_words,self.tags
+-    def create(self,test_size=0.0625,shuffle=True):
++        return self.all_words, self.tags
++
++    def create(self, test_size=0.0625, shuffle=True):
++        self.create_all_words()
+         self.new_X = []
+         self.new_y = []
+-        for X_iter,y_iter in tqdm(zip(self.X,self.y)):
+-            self.new_X.append(self.words_to_int(X_iter,self.all_words))
++        for X_iter, y_iter in tqdm(zip(self.X, self.y)):
++            self.new_X.append(self.words_to_int(X_iter, self.all_words))
+             self.new_y.append(self.tags.index(y_iter))
+         self.X = np.array(self.new_X)
+-        self.y = np.array(self.new_y) 
+-        self.X_train,self.X_test,self.y_train,self.y_test = train_test_split(self.X,self.y,test_size=test_size,shuffle=shuffle)
++        self.y = np.array(self.new_y)
++        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
++            self.X, self.y, test_size=test_size, shuffle=shuffle
++        )
+         self.X_train = torch.from_numpy(self.X_train).to(device)
+         self.y_train = torch.from_numpy(self.y_train).to(device)
+         self.X_test = torch.from_numpy(self.X_test).to(device)
+         self.y_test = torch.from_numpy(self.y_test).to(device)
+-        return self.new_X,self.new_y,self.X,self.y,self.X_train,self.X_test,self.y_train,self.y_test
++        return (
++            self.new_X,
++            self.new_y,
++            self.X,
++            self.y,
++            self.X_train,
++            self.X_test,
++            self.y_train,
++            self.y_test,
++            self.all_words
++        )
++
+     def create_test(self):
+         new_test = []
+-        for X_iter in tqdm(self.test['text']):
+-            new_test.append(self.words_to_int(X_iter,self.all_words))
++        for X_iter in tqdm(self.test["text"]):
++            new_test.append(self.words_to_int(X_iter, self.all_words))
+         new_test = torch.from_numpy(np.array(new_test)).to(device)
+         return new_test
+ 
+-    def create_submission(self,model):
++    def create_submission(self, model):
+         preds = model(self.create_test().float())
+-        ids = test['id']
+-        submission = {
+-            "id":[],
+-            "target":[]
+-        }
+-        for pred,id in tqdm(zip(preds,ids)):
+-            submission['id'].append(id)
+-            submission['target'].append(int(torch.round(pred)))
++        ids = test["id"]
++        submission = {"id": [], "target": []}
++        for pred, id in tqdm(zip(preds, ids)):
++            submission["id"].append(id)
++            submission["target"].append(int(torch.round(pred)))
+         submission = pd.DataFrame(submission)
+         return submission
+diff --git a/Modelling/dataset/sklearn.py b/Modelling/dataset/sklearn.py
+index 3ae6c92..5de1ca1 100644
+--- a/Modelling/dataset/sklearn.py
++++ b/Modelling/dataset/sklearn.py
+@@ -35,11 +35,11 @@ class Sklearn_Data_Loader:
+         return self.X_train, self.X_test, self.y_train, self.y_test, self.vectorizer
+ 
+     def create_test(self):
+-        self.test = self.vectorizer(self.test)
+-        return self.test
++        return self.vectorizer.transform(self.test["text"])
+ 
+     def create_submission(self, model):
+         preds = model.predict(self.create_test())
++        print(preds)
+         ids = self.test["id"]
+         submission = {"id": [], "target": []}
+         for pred, id in tqdm(zip(preds, ids)):
+diff --git a/Modelling/metrics/pytorch.py b/Modelling/metrics/pytorch.py
+index f62caee..34ec713 100644
+--- a/Modelling/metrics/pytorch.py
++++ b/Modelling/metrics/pytorch.py
+@@ -13,7 +13,7 @@ def accuracy(model, X, y):
+         total += 1
+     acc = round(correct / total, 3) * 100
+     return acc
+-def g_loss(model,X,y):
++def g_loss(model,X,y,criterion):
+     preds = model(X.float())
+     loss = criterion(preds.view(-1),y.float().view(-1))
+     return loss.item()
+diff --git a/Modelling/modelling/pytorch.py b/Modelling/modelling/pytorch.py
+index cb204a2..4a4aa4e 100644
+--- a/Modelling/modelling/pytorch.py
++++ b/Modelling/modelling/pytorch.py
+@@ -2,28 +2,21 @@ from Modelling import *
+ 
+ 
+ class Model(Module):
+-    def __init__(self, activation=ReLU, neurons=512, all_words=[]):
+-        super().__init__()
+-        self.activation = activation()
+-        self.output_activation = Sigmoid()
+-        self.linear1 = Linear(len(all_words), neurons)
+-        self.linear2 = Linear(neurons, neurons * 2)
+-        self.linearbn = BatchNorm1d(neurons * 2)
+-        self.linear3 = Linear(neurons * 2, neurons * 2)
+-        self.linear4 = Linear(neurons * 2, neurons * 3)
+-        self.linear5 = Linear(neurons * 3, neurons * 2)
+-        self.output = Linear(neurons * 2, 1)
++    def __init__(self, input_size, hidden_size=128, num_classes=1):
++        super(Model, self).__init__()
++        self.l1 = Linear(input_size, hidden_size)
++        self.l2 = Linear(hidden_size, hidden_size)
++        self.l3 = Linear(hidden_size, num_classes)
++        self.relu = ReLU()
+ 
+-    def forward(self, X):
+-        preds = self.activation(self.linear1(X))
+-        preds = self.activation(self.linear2(preds))
+-        preds = self.activation(self.linear3(preds))
+-        preds = self.activation(self.linearbn(preds))
+-        preds = self.activation(self.linear3(preds))
+-        preds = self.activation(self.linear4(preds))
+-        preds = self.activation(self.linear5(preds))
+-        preds = self.output_activation(self.output(preds))
+-        return preds
++    def forward(self, x):
++        out = self.l1(x)
++        out = self.relu(out)
++        out = self.l2(out)
++        out = self.relu(out)
++        out = self.l3(out)
++        # no activation and no softmax at the end
++        return out
+ 
+ 
+ class Pytorch_Modelling:
+@@ -33,18 +26,23 @@ class Pytorch_Modelling:
+         X_test,
+         y_train,
+         y_test,
+-        model=Model(activation=LeakyReLU, neurons=1024).to(device),
+-        criterion=MSELoss(),
++        all_words,
++        model=Model,
++        criterion=MSELoss(),  # TODO CrossEntropyLoss()
+         optimizer=Adam,
+         epochs=100,
+         batch_size=32,
+         name="BaseLine",
+     ):
++        model = Model(input_size=len(all_words)).to(device)
+         optimizer = optimizer(model.parameters(), lr=0.001)
+         wandb.init(project=PROJECT_NAME, name=name)
+         wandb.watch(model, log_freq=10)
++        torch.cuda.empty_cache()
+         for _ in tqdm(range(epochs)):
++            torch.cuda.empty_cache()
+             for i in range(0, len(X_train), batch_size):
++                torch.cuda.empty_cache()
+                 try:
+                     X_batch = X_train[i : i + batch_size]
+                     y_batch = y_train[i : i + batch_size]
+@@ -59,10 +57,11 @@ class Pytorch_Modelling:
+             wandb.log(
+                 {
+                     "Val Accuracy": accuracy(model, X_test, y_test),
+-                    "Val Loss": g_loss(model, X_test, y_test),
++                    "Val Loss": g_loss(model, X_test, y_test,criterion),
+                     "Accuracy": accuracy(model, X_train, y_train),
+-                    "Loss": g_loss(model, X_train, y_train),
++                    "Loss": g_loss(model, X_train, y_train,criterion),
+                 }
+             )
+             model.train()
+         wandb.finish()
++        return model
+diff --git a/Modelling/modelling/sklearn.py b/Modelling/modelling/sklearn.py
+index 251b67e..ae33ded 100644
+--- a/Modelling/modelling/sklearn.py
++++ b/Modelling/modelling/sklearn.py
+@@ -8,14 +8,16 @@ class Sklearn_Modelling:
+         preds = model.predict(X_test)
+         preds_prob = model.predict_proba(X_test)
+         labels = sorted(set(list(y_test)))
+-        wandb.log({
+-            "Accuracy":accuracy_score(preds,y_test),
+-            "F1 Score":f1_score(preds,y_test),
+-            "Precisions":precision_score(preds,y_test)
+-        })
++        wandb.log(
++            {
++                "Accuracy": accuracy_score(preds, y_test),
++                "F1 Score": f1_score(preds, y_test),
++                "Precisions": precision_score(preds, y_test),
++            }
++        )
+         wandb.sklearn.plot_confusion_matrix(y_test, preds, labels)
+-        wandb.sklearn.plot_classifier(model, X_train, X_test, y_train, y_test, preds, preds_prob, {0:0,1:1},
+-                                                         model_name=f'{model}')
++        # wandb.sklearn.plot_classifier(model, X_train, X_test, y_train, y_test, preds, preds_prob, {0:0,1:1},
++        #                                                  model_name=f'{model}')
+         wandb.sklearn.plot_roc(y_test, preds_prob, labels)
+         wandb.sklearn.plot_precision_recall(y_test, preds_prob, labels)
+         wandb.sklearn.plot_confusion_matrix(y_test, preds, labels)
+diff --git a/run.py b/run.py
+index e52dc64..0eac185 100644
+--- a/run.py
++++ b/run.py
+@@ -1,9 +1,11 @@
+ from Modelling import *
+ 
+-sdl = Sklearn_Data_Loader()
+-X_train, X_test, y_train, y_test, vectorizer = sdl.create()
++pdl = Pytorch_Data_Loader()
++new_X, new_y, X, y, X_train, X_test, y_train, y_test, all_words = pdl.create()
++pm = Pytorch_Modelling()
++model = pm.train(X_train, X_test, y_train, y_test, all_words=all_words)
++submission = pdl.create_submission(model)
++submission.to_csv("./Pytorch-BaseLine.csv", index=False)
+ 
+-model = svm.SVC(C=16, kernel="linear", gamma="auto",probability=True)
+-sm = Sklearn_Modelling()
+-model, preds, preds_prob= sm.train(model,X_train, y_train, X_test, y_test, "BaseLine")
+-sdl.create_submission(model)
++# SKlearn = 77%
++# Pytorch =
+diff --git a/wandb/latest-run b/wandb/latest-run
+index 11c7bcc..a60a946 120000
+--- a/wandb/latest-run
++++ b/wandb/latest-run
+@@ -1 +1 @@
+-run-20220515_134213-2l3l54j9
+\ No newline at end of file
++run-20220518_090918-3rt8ovo4
+\ No newline at end of file
