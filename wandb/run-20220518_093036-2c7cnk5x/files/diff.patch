@@ -1,0 +1,64 @@
+diff --git a/Modelling/dataset/pytorch.py b/Modelling/dataset/pytorch.py
+index 7826062..b1a612b 100644
+--- a/Modelling/dataset/pytorch.py
++++ b/Modelling/dataset/pytorch.py
+@@ -58,10 +58,10 @@ class Pytorch_Data_Loader:
+         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
+             self.X, self.y, test_size=test_size, shuffle=shuffle
+         )
+-        self.X_train = torch.from_numpy(self.X_train).to(device)
+-        self.y_train = torch.from_numpy(self.y_train).to(device)
+-        self.X_test = torch.from_numpy(self.X_test).to(device)
+-        self.y_test = torch.from_numpy(self.y_test).to(device)
++        self.X_train = torch.from_numpy(self.X_train).long().to(device)
++        self.y_train = torch.from_numpy(self.y_train).long().to(device)
++        self.X_test = torch.from_numpy(self.X_test).long().to(device)
++        self.y_test = torch.from_numpy(self.y_test).long().to(device)
+         return (
+             self.new_X,
+             self.new_y,
+@@ -82,7 +82,7 @@ class Pytorch_Data_Loader:
+         return new_test
+ 
+     def create_submission(self, model):
+-        preds = model(self.create_test().float())
++        preds = model(self.create_test().long())
+         ids = self.test["id"]
+         submission = {"id": [], "target": []}
+         for pred, id in tqdm(zip(preds, ids)):
+diff --git a/Modelling/metrics/pytorch.py b/Modelling/metrics/pytorch.py
+index 34ec713..3622adc 100644
+--- a/Modelling/metrics/pytorch.py
++++ b/Modelling/metrics/pytorch.py
+@@ -15,5 +15,5 @@ def accuracy(model, X, y):
+     return acc
+ def g_loss(model,X,y,criterion):
+     preds = model(X.float())
+-    loss = criterion(preds.view(-1),y.float().view(-1))
++    loss = criterion(preds.long().view(-1), y.long().view(-1))
+     return loss.item()
+diff --git a/Modelling/modelling/pytorch.py b/Modelling/modelling/pytorch.py
+index 1eb4659..9f53f07 100644
+--- a/Modelling/modelling/pytorch.py
++++ b/Modelling/modelling/pytorch.py
+@@ -45,9 +45,9 @@ class Pytorch_Modelling:
+                 torch.cuda.empty_cache()
+                 try:
+                     X_batch = X_train[i : i + batch_size]
+-                    y_batch = y_train[i : i + batch_size]
++                    y_batch = y_train[i : i + batch_size].view(-1)
+                     preds = model(X_batch.float())
+-                    loss = criterion(preds.float().view(-1), y_batch.float().view(-1))
++                    loss = criterion(preds.long().view(-1), y_batch.long().view(-1))
+                     optimizer.zero_grad()
+                     loss.backward()
+                     optimizer.step()
+diff --git a/wandb/latest-run b/wandb/latest-run
+index 7909561..68f2858 120000
+--- a/wandb/latest-run
++++ b/wandb/latest-run
+@@ -1 +1 @@
+-run-20220518_091750-1us9s29d
+\ No newline at end of file
++run-20220518_093036-2c7cnk5x
+\ No newline at end of file

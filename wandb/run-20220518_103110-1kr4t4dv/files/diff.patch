@@ -1,0 +1,100 @@
+diff --git a/Modelling/__init__.py b/Modelling/__init__.py
+index 0f52c0a..09a8d0e 100644
+--- a/Modelling/__init__.py
++++ b/Modelling/__init__.py
+@@ -19,12 +19,13 @@ import tensorflow as tf
+ import tensorflow_hub as hub
+ import tensorflow_datasets as tfds
+ import warnings
+-
++import os
+ warnings.filterwarnings("ignore")
+ PROJECT_NAME = "Natural-Language-Processing-with-Disaster-Tweets"
+ np.random.seed(55)
+ stemmer = PorterStemmer()
+-device = "cuda"
++device = "cpu"
++os.environ["CUDA_LAUNCH_BLOCKING"]="1"
+ print("Version: ", tf.__version__)
+ print("Eager mode: ", tf.executing_eagerly())
+ print("Hub version: ", hub.__version__)
+diff --git a/Modelling/dataset/pytorch.py b/Modelling/dataset/pytorch.py
+index 7826062..5a903bc 100644
+--- a/Modelling/dataset/pytorch.py
++++ b/Modelling/dataset/pytorch.py
+@@ -82,7 +82,7 @@ class Pytorch_Data_Loader:
+         return new_test
+ 
+     def create_submission(self, model):
+-        preds = model(self.create_test().float())
++        preds = model(self.create_test().long())
+         ids = self.test["id"]
+         submission = {"id": [], "target": []}
+         for pred, id in tqdm(zip(preds, ids)):
+diff --git a/Modelling/metrics/pytorch.py b/Modelling/metrics/pytorch.py
+index 34ec713..f13622b 100644
+--- a/Modelling/metrics/pytorch.py
++++ b/Modelling/metrics/pytorch.py
+@@ -6,7 +6,7 @@ def accuracy(model, X, y):
+     total = 0
+     preds = model(X.float())
+     for pred, y_batch in zip(preds, y):
+-        pred = int(torch.round(pred))
++        pred = int(torch.argmax(pred))
+         y_batch = int(y_batch)
+         if pred == y_batch:
+             correct += 1
+@@ -15,5 +15,5 @@ def accuracy(model, X, y):
+     return acc
+ def g_loss(model,X,y,criterion):
+     preds = model(X.float())
+-    loss = criterion(preds.view(-1),y.float().view(-1))
++    loss = criterion(preds.float(), y.long())
+     return loss.item()
+diff --git a/Modelling/modelling/pytorch.py b/Modelling/modelling/pytorch.py
+index 1eb4659..94cd634 100644
+--- a/Modelling/modelling/pytorch.py
++++ b/Modelling/modelling/pytorch.py
+@@ -2,7 +2,7 @@ from Modelling import *
+ 
+ 
+ class Model(Module):
+-    def __init__(self, input_size, hidden_size=512, num_classes=1):
++    def __init__(self, input_size, hidden_size=512, num_classes=2):
+         super(Model, self).__init__()
+         self.l1 = Linear(input_size, hidden_size)
+         self.l2 = Linear(hidden_size, hidden_size)
+@@ -47,19 +47,19 @@ class Pytorch_Modelling:
+                     X_batch = X_train[i : i + batch_size]
+                     y_batch = y_train[i : i + batch_size]
+                     preds = model(X_batch.float())
+-                    loss = criterion(preds.float().view(-1), y_batch.float().view(-1))
++                    loss = criterion(preds.float(), y_batch.long())
+                     optimizer.zero_grad()
+                     loss.backward()
+                     optimizer.step()
+-                except:
+-                    pass
++                except Exception as e:
++                    print(e)
+             model.eval()
+             wandb.log(
+                 {
+                     "Val Accuracy": accuracy(model, X_test, y_test),
+-                    "Val Loss": g_loss(model, X_test, y_test,criterion),
++                    "Val Loss": g_loss(model, X_test, y_test.long(),criterion),
+                     "Accuracy": accuracy(model, X_train, y_train),
+-                    "Loss": g_loss(model, X_train, y_train,criterion),
++                    "Loss": g_loss(model, X_train, y_train.long(),criterion),
+                 }
+             )
+             model.train()
+diff --git a/wandb/latest-run b/wandb/latest-run
+index 7909561..032de09 120000
+--- a/wandb/latest-run
++++ b/wandb/latest-run
+@@ -1 +1 @@
+-run-20220518_091750-1us9s29d
+\ No newline at end of file
++run-20220518_103110-1kr4t4dv
+\ No newline at end of file
