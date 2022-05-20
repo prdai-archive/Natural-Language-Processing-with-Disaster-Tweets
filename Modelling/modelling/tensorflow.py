@@ -37,7 +37,6 @@ class TensorFlow_Modelling:
             validation_data=(X_test, y_test),
             verbose=1,
         )
-        results = model.evaluate(X_test, y_test)
         wandb.log({
             "Accuracy":model.evaluate(X_train, y_train)[0],
             "Loss":model.evaluate(X_train, y_train)[1],
