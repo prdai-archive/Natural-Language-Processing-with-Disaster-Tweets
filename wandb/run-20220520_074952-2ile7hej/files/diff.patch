@@ -1,0 +1,22 @@
+diff --git a/run.py b/run.py
+index a0a9f0a..6420fc9 100644
+--- a/run.py
++++ b/run.py
+@@ -7,7 +7,7 @@ models = [
+     "https://tfhub.dev/google/universal-sentence-encoder-multilingual-qa/3",
+     "https://tfhub.dev/google/tf2-preview/nnlm-en-dim128/1",
+ ]
+-models = ["https://tfhub.dev/digitalepidemiologylab/covid-twitter-bert/2"]
++models = ["https://tfhub.dev/google/nnlm-en-dim50/2"]
+ for model in models:
+     tdl = TensorFlow_Data_Loader()
+     (
+diff --git a/wandb/latest-run b/wandb/latest-run
+index 5a31bdf..7efd6ac 120000
+--- a/wandb/latest-run
++++ b/wandb/latest-run
+@@ -1 +1 @@
+-run-20220520_065726-1vuhtw8j
+\ No newline at end of file
++run-20220520_074952-2ile7hej
+\ No newline at end of file
