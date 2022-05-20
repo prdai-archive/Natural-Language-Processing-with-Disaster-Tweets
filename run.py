@@ -11,10 +11,15 @@ models = ["https://tfhub.dev/digitalepidemiologylab/covid-twitter-bert/2"]
 for model in models:
     tdl = TensorFlow_Data_Loader()
     (
+        new_X,
+        new_y,
+        X,
+        y,
         X_train,
         X_test,
         y_train,
         y_test,
+        all_words,
     ) = tdl.create()
     tm = TensorFlow_Modelling()
     model = tm.train(X_train, X_test, y_train, y_test, model=model)
