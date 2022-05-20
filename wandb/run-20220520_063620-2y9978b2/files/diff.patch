@@ -1,0 +1,120 @@
+diff --git a/Modelling/dataset/tensorflow.py b/Modelling/dataset/tensorflow.py
+index f9a7ed8..d424b6d 100644
+--- a/Modelling/dataset/tensorflow.py
++++ b/Modelling/dataset/tensorflow.py
+@@ -12,16 +12,17 @@ class TensorFlow_Data_Loader:
+         self.test = test
+         self.X = np.array(self.data["text"])
+         self.y = np.array(self.data["target"])
+-        self.X_train,self.X_test,self.y_train,self.y_test = train_test_split(self.X,self.y,test_size=0.0625,shuffle=True)
++        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
++            self.X, self.y, test_size=0.0625, shuffle=True
++        )
+ 
+     def create(self):
+-        return self.X_train,self.X_test,self.y_train,self.y_test
++        return self.X_train, self.X_test, self.y_train, self.y_test
+ 
+     def create_test(self):
+-        self.test = tf.Tensor(np.array(self.test),value_index=0,dtype=tf.int64)
++        self.test = tf.constant(self.test)
+         return self.test
+ 
+-
+     def create_submission(self, model):
+         preds = model.predict(self.create_test())
+         ids = self.test["id"]
+diff --git a/Modelling/modelling/tensorflow.py b/Modelling/modelling/tensorflow.py
+index dcebfad..8e76792 100644
+--- a/Modelling/modelling/tensorflow.py
++++ b/Modelling/modelling/tensorflow.py
+@@ -32,7 +32,7 @@ class TensorFlow_Modelling:
+         history = model.fit(
+             X_train,
+             y_train,
+-            epochs=100,
++            epochs=10,
+             batch_size=32,
+             validation_data=(X_test, y_test),
+             verbose=1,
+diff --git a/run.py b/run.py
+index 8b52e52..4e86e97 100644
+--- a/run.py
++++ b/run.py
+@@ -1,11 +1,30 @@
+ from Modelling import *
+ 
+-tdl = TensorFlow_Data_Loader()
+-X_train, X_test, y_train, y_test, = tdl.create()
+-tm = TensorFlow_Modelling()
+-model = tm.train(X_train, X_test, y_train, y_test,)
+-submission = tdl.create_submission(model)
+-submission.to_csv("./TensorFlow-BaseLine.csv", index=False)
++models = [
++    "https://tfhub.dev/google/nnlm-en-dim50/2",
++    "https://tfhub.dev/google/nnlm-en-dim50-with-normalization/2",
++    "https://tfhub.dev/google/nnlm-en-dim128-with-normalization/2",
++    "https://tfhub.dev/digitalepidemiologylab/covid-twitter-bert/2",
++    "https://tfhub.dev/google/tf2-preview/nnlm-en-dim50/1",
++    "https://tfhub.dev/google/universal-sentence-encoder-multilingual-qa/3",
++    "https://tfhub.dev/google/tf2-preview/nnlm-en-dim128/1",
++    "https://tfhub.dev/google/universal-sentence-encoder-large/5",
++    "https://tfhub.dev/google/nnlm-en-dim128/2",
++    "https://tfhub.dev/google/universal-sentence-encoder/4",
++]
++models = ["https://tfhub.dev/google/nnlm-en-dim50/2"]
++for model in models:
++    tdl = TensorFlow_Data_Loader()
++    (
++        X_train,
++        X_test,
++        y_train,
++        y_test,
++    ) = tdl.create()
++    tm = TensorFlow_Modelling()
++    model = tm.train(X_train, X_test, y_train, y_test, model=model)
++    submission = tdl.create_submission(model)
++    submission.to_csv(f"./save/{model}-TensorFlow-BaseLine.csv", index=False)
+ 
+ # SKlearn = 77%
+ # Pytorch = 60%
+diff --git a/wandb/latest-run b/wandb/latest-run
+index fb16c7e..cb0f817 120000
+--- a/wandb/latest-run
++++ b/wandb/latest-run
+@@ -1 +1 @@
+-run-20220520_061357-npdvomp5
+\ No newline at end of file
++run-20220520_063620-2y9978b2
+\ No newline at end of file
+diff --git a/wandb/run-20220520_061357-npdvomp5/files/config.yaml b/wandb/run-20220520_061357-npdvomp5/files/config.yaml
+index d118a64..cbce35a 100644
+--- a/wandb/run-20220520_061357-npdvomp5/files/config.yaml
++++ b/wandb/run-20220520_061357-npdvomp5/files/config.yaml
+@@ -19,6 +19,14 @@ _wandb:
+       - 41
+       - 53
+       - 55
++      2:
++      - 1
++      - 2
++      - 3
++      - 5
++      - 41
++      - 53
++      - 55
+       3:
+       - 13
+       - 35
+diff --git a/wandb/run-20220520_061357-npdvomp5/files/wandb-summary.json b/wandb/run-20220520_061357-npdvomp5/files/wandb-summary.json
+index 9e26dfe..03dc2bc 100644
+--- a/wandb/run-20220520_061357-npdvomp5/files/wandb-summary.json
++++ b/wandb/run-20220520_061357-npdvomp5/files/wandb-summary.json
+@@ -1 +1 @@
+-{}
+\ No newline at end of file
++{"Accuracy": 0.005414108280092478, "Loss": 0.996777355670929, "Val Accuracy": 3.207334041595459, "Val Loss": 0.6764705777168274, "_timestamp": 1653008095, "_runtime": 658, "_step": 0, "_wandb": {"runtime": 658}}
+\ No newline at end of file
+diff --git a/wandb/run-20220520_061357-npdvomp5/run-npdvomp5.wandb b/wandb/run-20220520_061357-npdvomp5/run-npdvomp5.wandb
+index a46155a..6c70632 100644
+Binary files a/wandb/run-20220520_061357-npdvomp5/run-npdvomp5.wandb and b/wandb/run-20220520_061357-npdvomp5/run-npdvomp5.wandb differ
