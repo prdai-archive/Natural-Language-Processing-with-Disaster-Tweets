@@ -289,7 +289,7 @@ pep8==1.7.1
 pexpect==4.8.0
 phonenumbers==8.12.37
 pickleshare==0.7.5
-pillow==8.2.0
+pillow==9.3.0
 pip-review==1.1.0
 pip==22.0.3
 pkginfo==1.8.2
