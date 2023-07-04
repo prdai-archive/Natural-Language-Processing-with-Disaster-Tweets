@@ -22,7 +22,7 @@ astroid==2.9.0
 astropy==4.2.1
 astunparse==1.6.3
 async-generator==1.10
-atomicwrites==1.4.0
+atomicwrites==1.4.1
 attrs==21.4.0
 authlib==1.0.1
 autopep8==1.6.0
