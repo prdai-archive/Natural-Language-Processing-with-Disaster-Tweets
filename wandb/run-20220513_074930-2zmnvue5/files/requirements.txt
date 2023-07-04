@@ -20,7 +20,7 @@ async-timeout==3.0.1
 attrs==21.2.0
 audioread==2.1.9
 authlib==1.0.1
-azure-common==1.1.25
+azure-common==1.1.28
 azure-core==1.7.0
 azure-cosmos==4.0.0b6
 azure-datalake-store==0.0.52
