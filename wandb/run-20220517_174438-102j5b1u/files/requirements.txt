@@ -29,7 +29,7 @@ autopep8==1.6.0
 babel==2.9.1
 backcall==0.2.0
 backoff==1.11.1
-backports.functools-lru-cache==1.6.4
+backports.functools-lru-cache==1.6.6
 backports.shutil-get-terminal-size==1.0.0
 backports.tempfile==1.0
 backports.weakref==1.0.post1
