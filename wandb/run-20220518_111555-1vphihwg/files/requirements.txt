@@ -34,7 +34,7 @@ backports.shutil-get-terminal-size==1.0.0
 backports.tempfile==1.0
 backports.weakref==1.0.post1
 backports.zoneinfo==0.2.1
-barcode==1.0.1
+barcode==1.0.4
 base58==2.1.1
 bcrypt==3.2.0
 beautifulsoup4==4.11.1
