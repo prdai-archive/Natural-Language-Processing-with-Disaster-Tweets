@@ -3,7 +3,7 @@ aiofiles==0.7.0
 aiohttp-cors==0.7.0
 aioredis==2.0.0
 aiosignal==1.2.0
-alabaster==0.7.12
+alabaster==0.7.16
 altair==4.1.0
 anaconda-client==1.9.0
 anaconda-navigator==2.0.3
